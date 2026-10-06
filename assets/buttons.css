@@ -1,0 +1,129 @@
+/* VITAL — thème des boutons (à charger EN DERNIER dans chaque page).
+   Une seule source de vérité : modifier les 3 variables ci-dessous change tous les CTA du site. */
+:root {
+  --cta: #72C6C7;          /* couleur des CTA */
+  --cta-hover: #5BB5B6;    /* survol */
+  --cta-ink: #FFFFFF;      /* texte sur CTA */
+  --cta-tint: rgba(114, 198, 199, 0.16);
+  --accent-text: #2A8586;   /* variante foncée de #72C6C7 pour le texte sur fond blanc (lisibilité) */
+  --ease: cubic-bezier(.4, 0, .2, 1);
+}
+
+/* ---- 1. Angles droits partout (boutons et groupes de boutons) ---- */
+button, input[type="submit"],
+.btn-primary, .btn-purple, .btn-ghost, .btn-danger, .buy-btn, .add-btn, .s-add,
+.pill, .s-tab, .dot, .qty, .s-qty, .qty button, .s-qty button,
+.lightbox .close, .s-drawer .x, .newsletter-form button, .s-addr.add {
+  border-radius: 0 !important;
+}
+
+/* ---- 1bis. Aucun arrondi nulle part (cartes, champs, images, badges, modales…) ---- */
+*, *::before, *::after { border-radius: 0 !important; }
+.s-spin { border-radius: 50% !important; }   /* seule exception : l'indicateur de chargement doit rester circulaire pour tourner */
+
+
+/* ---- 1ter. Contrôles de formulaire 100 % carrés (cases, radios, listes déroulantes) ---- */
+input[type="checkbox"], input[type="radio"] {
+  -webkit-appearance: none; appearance: none; margin: 0; flex-shrink: 0;
+  width: 16px; height: 16px; border: 1.5px solid #B4B8BE; background: #fff; cursor: pointer;
+  display: inline-grid; place-content: center;
+  transition: background-color .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease);
+}
+input[type="checkbox"]:hover, input[type="radio"]:hover { border-color: var(--cta-hover); }
+input[type="checkbox"]:checked { background: var(--cta); border-color: var(--cta); }
+input[type="checkbox"]:checked::after {
+  content: ''; width: 9px; height: 5px; margin-top: -2px;
+  border-left: 2px solid var(--cta-ink); border-bottom: 2px solid var(--cta-ink); transform: rotate(-45deg);
+}
+input[type="radio"]:checked { border-color: var(--cta-hover); background: var(--cta); box-shadow: inset 0 0 0 3px #fff; }
+input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline: 3px solid var(--cta); outline-offset: 2px; }
+
+select {
+  -webkit-appearance: none; appearance: none;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23363B42' stroke-width='1.8'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important; background-position: right 14px center !important;
+  padding-right: 40px !important; cursor: pointer;
+}
+input, select, textarea { transition: border-color .25s var(--ease), box-shadow .25s var(--ease); }
+
+/* ---- 2. Transition douce sur tous les boutons ---- */
+button, .btn-primary, .btn-purple, .btn-ghost, .btn-danger, .buy-btn, .add-btn, .s-add,
+.pill, .s-tab, .dot, .link-underline, .link-plain, .zoom-btn, .wish, .s-addr.add,
+.header-icons button, .qty button, .s-qty button, .lightbox .close, .s-drawer .x {
+  transition: background-color .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease),
+              box-shadow .3s var(--ease), transform .3s var(--ease), width .3s var(--ease);
+  will-change: transform;
+}
+
+/* ---- 3. CTA : fond #72C6C7 ---- */
+.btn-primary, .btn-purple, .buy-btn, .add-btn, .s-add, .newsletter-form button {
+  background: var(--cta);
+  color: var(--cta-ink);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary:not([disabled]):not(.is-disabled):hover,
+.btn-purple:not([disabled]):hover,
+.buy-btn:not([disabled]):hover,
+.add-btn:hover, .s-add:hover,
+.newsletter-form button:hover {
+  background: var(--cta-hover);
+  color: var(--cta-ink);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(114, 198, 199, 0.5);
+  opacity: 1;
+}
+.btn-primary:not([disabled]):not(.is-disabled):active,
+.btn-purple:not([disabled]):active, .buy-btn:active, .add-btn:active, .s-add:active,
+.newsletter-form button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(114, 198, 199, 0.4);
+  transition-duration: .1s;
+}
+/* petit reflet qui traverse le bouton au survol */
+.btn-primary::after, .btn-purple::after, .buy-btn::after, .newsletter-form button::after {
+  content: ''; position: absolute; top: 0; left: -80%; width: 60%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg); pointer-events: none; transition: left .6s var(--ease);
+}
+.btn-primary:not([disabled]):not(.is-disabled):hover::after, .btn-purple:not([disabled]):hover::after,
+.buy-btn:not([disabled]):hover::after, .newsletter-form button:hover::after { left: 130%; }
+
+/* états désactivés : pas d'animation */
+.btn-primary[disabled], .btn-primary.is-disabled, .btn-purple[disabled], .buy-btn[disabled] {
+  background: #D5D8DC; color: #8A9098; transform: none; box-shadow: none; cursor: not-allowed;
+}
+
+/* ---- 4. Boutons secondaires ---- */
+.btn-ghost { background: #fff; color: var(--ink-strong); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--cta-tint); border-color: var(--cta); color: var(--ink-strong); transform: translateY(-2px); box-shadow: 0 6px 14px rgba(114, 198, 199, 0.28); }
+.btn-ghost:active { transform: translateY(0); box-shadow: none; transition-duration: .1s; }
+.btn-danger:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(192, 57, 43, 0.18); }
+
+.pill:hover, .s-tab:hover { border-color: var(--cta); background: var(--cta-tint); transform: translateY(-2px); }
+.pill.active:hover, .s-tab.on:hover { background: var(--ink); border-color: var(--ink); }
+
+.qty button:hover, .s-qty button:hover { background: var(--cta-tint); color: var(--ink-strong); }
+.qty button:active, .s-qty button:active { background: var(--cta); }
+.dot:hover { background: var(--cta); }
+.dot.active:hover { background: var(--purple); }
+
+.header-icons button:hover { color: var(--cta-hover); transform: translateY(-2px) scale(1.08); }
+.link-underline:hover { color: var(--cta-hover); border-bottom-color: var(--cta-hover); }
+.link-plain:hover { text-decoration: none; opacity: .75; }
+.s-addr.add:hover { border-color: var(--cta); background: var(--cta-tint); transform: translateY(-2px); }
+.lightbox .close:hover, .s-drawer .x:hover { background: var(--cta); color: var(--cta-ink); transform: rotate(90deg); }
+
+/* ---- 5. Accessibilité ---- */
+button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .buy-btn:focus-visible {
+  outline: 3px solid var(--cta); outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  button, .btn-primary, .btn-purple, .btn-ghost, .buy-btn, .add-btn, .s-add, .pill, .s-tab { transition: none !important; transform: none !important; }
+  .btn-primary::after, .btn-purple::after, .buy-btn::after, .newsletter-form button::after { display: none; }
+}
+
+/* pastille du panier : texte sombre sur turquoise */
+.cart-badge { color: var(--cta-ink) !important; }
