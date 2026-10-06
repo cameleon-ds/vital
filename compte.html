@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mon compte — VITAL Laboratoires</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shop.css">
+<link rel="stylesheet" href="assets/buttons.css">
+</head>
+<body>
+<div id="site-top"></div>
+<main class="s-page" id="root"></main>
+<div id="site-footer"></div>
+
+<script src="assets/catalogue.js"></script>
+<script src="assets/shop.js"></script>
+<script>
+(function () {
+  var V = window.VITAL, esc = V.escapeHtml, money = V.fmtMoney, CFG = V.CONFIG;
+  V.mountChrome({ active: '' });
+  var root = document.getElementById('root');
+  var SAFE_NEXT = ['commande.html', 'panier.html', 'index.html'];
+  var next = V.qs('next'); if (SAFE_NEXT.indexOf(next) === -1) next = null;
+
+  function $(id) { return document.getElementById(id); }
+  function val(id) { var e = $(id); return e ? e.value.trim() : ''; }
+  function setInvalid(id, bad) { var w = document.querySelector('[data-f="' + id + '"]'); if (w) w.classList.toggle('invalid', !!bad); return !bad; }
+  function field(id, label, o) {
+    o = o || {};
+    var input;
+    if (o.select) input = '<select class="s-input" id="' + id + '"><option value="">Sélectionner…</option>' + o.select.map(function (g) { return '<option>' + esc(g) + '</option>'; }).join('') + '</select>';
+    else if (o.type === 'password') input = '<div class="s-pw"><input class="s-input" id="' + id + '" type="password" autocomplete="' + (o.auto || 'current-password') + '"><button type="button" data-toggle="' + id + '">Afficher</button></div>';
+    else input = '<input class="s-input" id="' + id + '" type="' + (o.type || 'text') + '" ' + (o.auto ? 'autocomplete="' + o.auto + '" ' : '') + (o.ph ? 'placeholder="' + esc(o.ph) + '" ' : '') + (o.max ? 'maxlength="' + o.max + '" ' : '') + (o.inputmode ? 'inputmode="' + o.inputmode + '" ' : '') + (o.value ? 'value="' + esc(o.value) + '"' : '') + '>';
+    return '<div class="s-field' + (o.full ? ' full' : '') + '" data-f="' + id + '"><label for="' + id + '">' + label + (o.opt ? ' <span class="opt">(facultatif)</span>' : '') + '</label>' + input + '<span class="err">' + esc(o.err || 'Champ obligatoire') + '</span></div>';
+  }
+  function alertBox(id) { return '<div class="s-alert err" id="' + id + '"></div>'; }
+  function showAlert(id, msg, kind) { var a = $(id); if (!a) return; a.textContent = msg; a.className = 's-alert show ' + (kind || 'err'); }
+  function afterAuth() { location.href = next || 'compte.html#tableau-de-bord'; if (!next) route(); }
+  function icon(path) { return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + path + '</svg>'; }
+  var CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+  /* ======================= Pages non connecté ======================= */
+  function authSide() {
+    return '<div class="side"><h2>Pourquoi créer un compte VITAL ?</h2><ul>' +
+      '<li>' + CHECK + '<span>Suivez vos commandes en temps réel, de la préparation à la livraison.</span></li>' +
+      '<li>' + CHECK + '<span>Retrouvez votre historique et recommandez vos soins en un clic.</span></li>' +
+      '<li>' + CHECK + '<span>Enregistrez vos adresses de livraison pour commander plus vite.</span></li>' +
+      '<li>' + CHECK + '<span>Gardez vos produits favoris dans votre liste de souhaits.</span></li></ul></div>';
+  }
+  function viewLogin() {
+    root.innerHTML = '<div class="s-auth"><div class="panel"><h1>Connexion</h1><p class="sub">Heureux de vous revoir. Connectez-vous à votre espace client.</p>' +
+      '<form id="f" novalidate>' + field('email', 'Adresse e-mail', { type: 'email', auto: 'email', err: 'Saisissez une adresse e-mail valide', value: V.qs('email') || '' }) +
+      field('pw', 'Mot de passe', { type: 'password', err: 'Saisissez votre mot de passe' }) +
+      '<div style="text-align:right;margin-top:-6px"><a class="link-plain" href="#mot-de-passe-oublie">Mot de passe oublié ?</a></div>' +
+      alertBox('err') + '<button class="btn-primary btn-block" type="submit">Se connecter</button></form>' +
+      '<div class="s-or">ou</div>' +
+      '<button class="btn-ghost btn-block" id="demo">Essayer avec le compte démo</button>' +
+      '<p class="s-muted" style="text-align:center;margin:20px 0 0">Pas encore de compte ? <a class="link-plain" href="#inscription">Créer un compte</a></p></div>' + authSide() + '</div>';
+    $('f').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var ok = setInvalid('email', !V.isEmail(val('email'))); ok = setInvalid('pw', !$('pw').value) && ok;
+      if (!ok) return;
+      V.login(val('email'), $('pw').value).then(function (r) { if (!r.ok) showAlert('err', r.error); else afterAuth(); });
+    });
+    $('demo').addEventListener('click', function () { V.seedDemo().then(afterAuth); });
+  }
+  function strengthLabel(l) { return ['', 'Faible', 'Moyen', 'Bon', 'Excellent'][l] || ''; }
+  function viewRegister() {
+    root.innerHTML = '<div class="s-auth"><div class="panel"><h1>Créer un compte</h1><p class="sub">Quelques secondes suffisent pour commencer.</p>' +
+      '<form id="f" novalidate><div class="s-form-grid">' + field('firstName', 'Prénom', { auto: 'given-name' }) + field('lastName', 'Nom', { auto: 'family-name' }) +
+      field('email', 'Adresse e-mail', { type: 'email', auto: 'email', full: true, err: 'Saisissez une adresse e-mail valide', value: V.qs('email') || '' }) +
+      field('phone', 'Téléphone', { type: 'tel', auto: 'tel', full: true, ph: '22 123 456', err: 'Numéro tunisien à 8 chiffres (ex. 22 123 456)' }) +
+      '<div class="full">' + field('pw', 'Mot de passe', { type: 'password', auto: 'new-password', err: '8 caractères minimum' }) + '<div class="s-meter" id="meter" data-l="0"><i></i><i></i><i></i><i></i></div><div class="s-muted" id="meter-l" style="margin-top:4px;min-height:16px">8 caractères minimum, avec majuscule et chiffre pour plus de sécurité.</div></div>' +
+      field('pw2', 'Confirmer le mot de passe', { type: 'password', auto: 'new-password', full: true, err: 'Les mots de passe ne correspondent pas' }) + '</div>' +
+      '<label class="s-check"><input type="checkbox" id="nl"> Je souhaite recevoir les nouveautés et conseils VITAL par e-mail</label>' +
+      '<label class="s-check" id="cg-w"><input type="checkbox" id="cg"> <span>J’accepte les <a href="#" onclick="return false;">conditions générales</a> et la <a href="#" onclick="return false;">politique de confidentialité</a>.</span></label>' +
+      alertBox('err') + '<button class="btn-primary btn-block" type="submit">Créer mon compte</button></form>' +
+      '<p class="s-muted" style="text-align:center;margin:20px 0 0">Déjà un compte ? <a class="link-plain" href="#connexion">Se connecter</a></p></div>' + authSide() + '</div>';
+    $('pw').addEventListener('input', function () { var l = V.pwStrength(this.value); $('meter').setAttribute('data-l', l); if (l) $('meter-l').textContent = 'Robustesse : ' + strengthLabel(l); });
+    $('phone').addEventListener('blur', function () { if (V.isPhone(this.value)) this.value = V.fmtPhone(this.value).replace('+216 ', ''); });
+    $('f').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var ok = true;
+      ['firstName', 'lastName'].forEach(function (id) { ok = setInvalid(id, !val(id)) && ok; });
+      ok = setInvalid('email', !V.isEmail(val('email'))) && ok;
+      ok = setInvalid('phone', !V.isPhone(val('phone'))) && ok;
+      ok = setInvalid('pw', $('pw').value.length < 8) && ok;
+      ok = setInvalid('pw2', $('pw').value !== $('pw2').value) && ok;
+      $('cg-w').classList.toggle('invalid', !$('cg').checked); ok = $('cg').checked && ok;
+      if (!ok) return;
+      V.register({ firstName: val('firstName'), lastName: val('lastName'), email: val('email'), phone: val('phone'), password: $('pw').value, newsletter: $('nl').checked })
+        .then(function (r) { if (!r.ok) showAlert('err', r.error); else afterAuth(); });
+    });
+  }
+  function viewForgot() {
+    root.innerHTML = '<div class="s-auth"><div class="panel"><h1>Mot de passe oublié</h1><p class="sub">Saisissez votre e-mail : nous vous enverrons un lien pour choisir un nouveau mot de passe.</p>' +
+      '<form id="f" novalidate>' + field('email', 'Adresse e-mail', { type: 'email', err: 'Saisissez une adresse e-mail valide' }) + alertBox('msg') +
+      '<button class="btn-primary btn-block" type="submit">Envoyer le lien</button></form>' +
+      '<p class="s-muted" style="text-align:center;margin:20px 0 0"><a class="link-plain" href="#connexion">← Retour à la connexion</a></p></div>' + authSide() + '</div>';
+    $('f').addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!setInvalid('email', !V.isEmail(val('email')))) return;
+      // message volontairement neutre (ne révèle pas si le compte existe)
+      showAlert('msg', 'Si un compte existe avec cette adresse, un e-mail de réinitialisation vient d’être envoyé. (Démo : aucun e-mail réel n’est envoyé.)', 'ok');
+    });
+  }
+
+  /* ======================= Espace connecté ======================= */
+  function shell(active, title, inner) {
+    var u = V.currentUser();
+    var links = [['tableau-de-bord', 'Tableau de bord', icon('<rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect>')],
+      ['commandes', 'Mes commandes', icon('<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path>')],
+      ['adresses', 'Mes adresses', icon('<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>')],
+      ['favoris', 'Liste de souhaits', icon('<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>')],
+      ['profil', 'Mes informations', icon('<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>')]];
+    root.innerHTML = '<div class="s-crumbs"><a href="index.html">Accueil</a> / Mon compte</div><h1 class="s-title">' + title + '</h1><p class="s-lead"></p>' +
+      '<div class="s-acc"><nav aria-label="Espace client"><div class="who"><b>' + esc(u.firstName + ' ' + u.lastName) + '</b><span>' + esc(u.email) + '</span></div>' +
+      links.map(function (l) { return '<a href="#' + l[0] + '" class="' + (active === l[0] ? 'on' : '') + '">' + l[2] + l[1] + '</a>'; }).join('') +
+      '<button id="logout">' + icon('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line>') + 'Se déconnecter</button></nav>' +
+      '<section id="content">' + inner + '</section></div>';
+    $('logout').addEventListener('click', function () { V.logout(); V.toast('Vous êtes déconnecté·e'); location.hash = '#connexion'; route(); });
+  }
+  function ordTile(o) {
+    var n = o.lines.reduce(function (s, l) { return s + l.qty; }, 0);
+    return '<div class="s-ord"><div><div class="h"><span class="num">' + esc(o.id) + '</span>' + V.statusBadge(o.status) + '<span class="dt">' + V.fmtDate(o.date) + '</span></div>' +
+      '<div class="thumbs">' + o.lines.slice(0, 4).map(function (l) { return '<div class="tb"><img src="' + l.image + '" alt="' + esc(l.name) + '"></div>'; }).join('') + '<span>' + n + ' article' + (n > 1 ? 's' : '') + '</span></div></div>' +
+      '<div class="r"><div class="tot">' + money(o.total) + '</div><a class="btn-ghost btn-sm" href="#commande/' + encodeURIComponent(o.id) + '">Voir le détail</a></div></div>';
+  }
+
+  function viewDashboard() {
+    var u = V.currentUser(), orders = V.ordersForCurrentUser();
+    var active = orders.filter(function (o) { return o.status === 'preparation' || o.status === 'expediee'; }).length;
+    var inner = '<div class="s-stats"><div class="s-stat"><div class="v">' + orders.length + '</div><div class="l">Commande' + (orders.length > 1 ? 's' : '') + ' passée' + (orders.length > 1 ? 's' : '') + '</div></div>' +
+      '<div class="s-stat"><div class="v">' + active + '</div><div class="l">En cours de traitement</div></div>' +
+      '<div class="s-stat"><div class="v">' + V.getWish().length + '</div><div class="l">Produit' + (V.getWish().length > 1 ? 's' : '') + ' en favoris</div></div></div>' +
+      '<div class="s-section-h" style="margin-top:8px"><h2 style="font-size:18px">Dernière commande</h2>' + (orders.length ? '<a class="link-plain" href="#commandes">Toutes mes commandes</a>' : '') + '</div>' +
+      (orders.length ? ordTile(orders[0]) : '<div class="s-card"><div class="s-empty" style="padding:36px 20px">' + V.ICON.bag + '<h3>Aucune commande pour le moment</h3><p>Dès votre première commande, elle apparaîtra ici avec son suivi.</p><a class="btn-primary" href="index.html#produits">Découvrir les produits</a></div></div>');
+    shell('tableau-de-bord', 'Bonjour ' + esc(u.firstName), inner);
+  }
+
+  function viewOrders() {
+    var all = V.ordersForCurrentUser(), f = V.qs('f') || 'all';
+    var tabs = [['all', 'Toutes'], ['cours', 'En cours'], ['livree', 'Livrées'], ['annulee', 'Annulées']];
+    var list = all.filter(function (o) { return f === 'all' || (f === 'cours' && (o.status === 'preparation' || o.status === 'expediee')) || o.status === f; });
+    var inner = '<div class="s-tabs">' + tabs.map(function (t) { return '<button class="s-tab' + (f === t[0] ? ' on' : '') + '" data-filter="' + t[0] + '">' + t[1] + '</button>'; }).join('') + '</div>' +
+      (list.length ? list.map(ordTile).join('') : '<div class="s-card"><div class="s-empty" style="padding:40px 20px">' + V.ICON.bag + '<h3>' + (all.length ? 'Aucune commande dans cette catégorie' : 'Vous n’avez pas encore commandé') + '</h3><p>' + (all.length ? 'Essayez un autre filtre.' : 'Vos commandes et leur suivi apparaîtront ici.') + '</p>' + (all.length ? '' : '<a class="btn-primary" href="index.html#produits">Découvrir les produits</a>') + '</div></div>');
+    shell('commandes', 'Mes commandes', inner);
+    document.querySelectorAll('.s-tab').forEach(function (b) { b.addEventListener('click', function () { var u = new URL(location.href); u.searchParams.set('f', b.getAttribute('data-filter')); history.replaceState(null, '', u.toString()); viewOrders(); }); });
+  }
+
+  function viewOrder(id) {
+    var o = V.getOrder(id), u = V.currentUser();
+    if (!o || o.email !== u.email) { shell('commandes', 'Commande introuvable', '<div class="s-card"><div class="s-empty">' + V.ICON.bag + '<h3>Commande introuvable</h3><p>Cette commande n’existe pas ou n’est pas associée à votre compte.</p><a class="btn-primary" href="#commandes">Mes commandes</a></div></div>'); return; }
+    var labels = ['Confirmée', 'En préparation', 'Expédiée', 'Livrée'], cur = { preparation: 1, expediee: 2, livree: 3 }[o.status];
+    var tl;
+    if (o.status === 'annulee') tl = '<div class="s-alert err show">Cette commande a été annulée' + (o.cancelledAt ? ' le ' + V.fmtDate(o.cancelledAt) : '') + '.</div>';
+    else tl = '<div class="s-timeline">' + labels.map(function (l, i) {
+      var cls = i < cur ? 'done' : (i === cur ? (o.status === 'livree' ? 'done' : 'cur') : '');
+      return '<div class="tl ' + cls + '"><i>' + (cls === 'done' ? V.ICON.check : '') + '</i>' + l + '</div>';
+    }).join('') + '</div>';
+    var n = o.lines.reduce(function (s, l) { return s + l.qty; }, 0);
+    var inner = '<div style="margin-bottom:18px"><a class="link-plain" href="#commandes">← Toutes mes commandes</a></div>' +
+      '<div class="s-card pad" style="margin-bottom:20px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px"><div><div class="s-muted">Commande</div><div style="font-size:20px;font-weight:800;color:var(--ink-strong)">' + esc(o.id) + '</div><div class="s-muted">Passée le ' + V.fmtDate(o.date, true) + '</div></div>' + V.statusBadge(o.status) + '</div>' + tl + '</div>' +
+      '<div class="s-layout" style="grid-template-columns:minmax(0,1fr) 320px"><div class="s-card pad"><h2>Articles (' + n + ')</h2>' +
+        o.lines.map(function (l) { return '<div class="s-line compact"><div class="img"><img src="' + l.image + '" alt=""><b>' + l.qty + '</b></div><div><a class="nm" href="producto.html?p=' + l.slug + '">' + esc(l.name) + '</a><div class="sb">' + esc(l.size) + ' · ' + money(l.price) + ' l’unité</div></div><div class="tot">' + money(l.price * l.qty) + '</div></div>'; }).join('') +
+        '<div class="s-sum" style="margin-top:12px"><div class="row"><span>Sous-total</span><b>' + money(o.subtotal) + '</b></div>' + (o.discount ? '<div class="row disc"><span>Code ' + esc(o.promo) + '</span><b>−' + money(o.discount) + '</b></div>' : '') +
+        '<div class="row"><span>Livraison</span><b>' + (o.shipping === 0 ? 'Offerte' : money(o.shipping)) + '</b></div><div class="row total"><span>Total</span><b>' + money(o.total) + '</b></div></div></div>' +
+      '<div style="display:flex;flex-direction:column;gap:16px"><div class="s-card pad"><h3>Livraison</h3><div class="s-kv" style="grid-template-columns:1fr;gap:6px"><div class="vv"><b>' + esc(o.delivery.label) + '</b><br>' + esc(o.address.firstName + ' ' + o.address.lastName) + '<br>' + V.lineAddress(o.address) + '<br>' + esc(V.fmtPhone(o.address.phone)) + '</div></div></div>' +
+        '<div class="s-card pad"><h3>Paiement</h3><div class="vv" style="font-size:14px">' + esc(o.payment.label) + '<br><span class="s-muted">' + esc(o.payment.status) + '</span></div></div>' +
+        '<div style="display:flex;flex-direction:column;gap:10px"><button class="btn-primary btn-block" id="rebuy">Commander à nouveau</button>' + (o.status === 'preparation' ? '<button class="btn-danger btn-block" id="cancel">Annuler la commande</button>' : '') + '<a class="link-plain" style="text-align:center" href="mailto:contact@vital.com.tn?subject=Commande%20' + encodeURIComponent(o.id) + '">Un problème avec cette commande ?</a></div></div></div>';
+    shell('commandes', 'Détail de la commande', inner);
+    $('rebuy').addEventListener('click', function () { var k = V.rebuyOrder(o); V.toast(k + ' article' + (k > 1 ? 's' : '') + ' ajouté' + (k > 1 ? 's' : '') + ' au panier'); V.openDrawer(); });
+    var c = $('cancel'); if (c) c.addEventListener('click', function () {
+      V.confirm('Annuler cette commande ?', 'La commande ' + o.id + ' sera annulée. Cette action est définitive.', 'Annuler la commande', true).then(function (ok) { if (ok) { V.cancelOrder(o.id); V.toast('Commande annulée'); viewOrder(id); } });
+    });
+  }
+
+  function addrForm(a) {
+    a = a || {};
+    return '<form id="af" novalidate><div class="s-form-grid">' +
+      field('label', 'Nom de l’adresse', { full: true, ph: 'Domicile, Bureau…', value: a.label || '' }) +
+      field('firstName', 'Prénom', { value: a.firstName || (V.currentUser().firstName) }) + field('lastName', 'Nom', { value: a.lastName || (V.currentUser().lastName) }) +
+      field('phone', 'Téléphone', { type: 'tel', full: true, ph: '22 123 456', err: 'Numéro tunisien à 8 chiffres', value: a.phone || V.currentUser().phone || '' }) +
+      field('address', 'Adresse', { full: true, value: a.address || '' }) + field('complement', 'Complément', { opt: true, full: true, value: a.complement || '' }) +
+      field('zip', 'Code postal', { max: 4, inputmode: 'numeric', err: 'Code postal à 4 chiffres', value: a.zip || '' }) + field('city', 'Ville', { value: a.city || '' }) +
+      field('governorate', 'Gouvernorat', { select: CFG.governorates, full: true }) + '</div>' +
+      '<label class="s-check" style="margin-top:14px"><input type="checkbox" id="isDef"' + (a.isDefault ? ' checked' : '') + '> Définir comme adresse par défaut</label></form>';
+  }
+  function viewAddresses() {
+    var u = V.currentUser(), list = u.addresses || [];
+    var inner = '<div class="s-addrs">' + list.map(function (a) {
+      return '<div class="s-addr">' + (a.isDefault ? '<span class="tag">Par défaut</span>' : '') + '<b>' + esc(a.label || 'Adresse') + '</b>' + esc(a.firstName + ' ' + a.lastName) + '<span>' + V.lineAddress(a) + '</span><span>' + esc(V.fmtPhone(a.phone)) + '</span>' +
+        '<div class="acts"><button class="link-plain" data-edit="' + a.id + '">Modifier</button>' + (a.isDefault ? '' : '<button class="link-plain" data-def="' + a.id + '">Définir par défaut</button>') + '<button class="link-plain" style="color:var(--err)" data-del="' + a.id + '">Supprimer</button></div></div>';
+    }).join('') + '<button class="s-addr add" id="add-addr"><span style="font-size:28px;line-height:1">+</span>Ajouter une adresse</button></div>';
+    shell('adresses', 'Mes adresses', inner);
+    function open(a) {
+      var ov = V.modal({ title: a ? 'Modifier l’adresse' : 'Nouvelle adresse', html: addrForm(a), actions: [
+        { label: 'Annuler' },
+        { label: 'Enregistrer', cls: 'btn-primary', onClick: function () {
+          var ok = true; ['label', 'firstName', 'lastName', 'address', 'city', 'governorate'].forEach(function (id) { ok = setInvalid(id, !val(id)) && ok; });
+          ok = setInvalid('phone', !V.isPhone(val('phone'))) && ok; ok = setInvalid('zip', !/^\d{4}$/.test(val('zip'))) && ok;
+          if (!ok) return false;
+          V.saveAddress({ id: a ? a.id : null, label: val('label'), firstName: val('firstName'), lastName: val('lastName'), phone: val('phone'), address: val('address'), complement: val('complement'), zip: val('zip'), city: val('city'), governorate: val('governorate'), isDefault: $('isDef').checked || (a && a.isDefault) });
+          V.toast('Adresse enregistrée'); viewAddresses();
+        } }] });
+      ov.querySelector('.s-modal').style.maxWidth = '560px';
+      if (a) $('governorate').value = a.governorate;
+    }
+    $('add-addr').addEventListener('click', function () { open(null); });
+    document.querySelectorAll('[data-edit]').forEach(function (b) { b.addEventListener('click', function () { open(list.filter(function (a) { return a.id === b.getAttribute('data-edit'); })[0]); }); });
+    document.querySelectorAll('[data-def]').forEach(function (b) { b.addEventListener('click', function () { V.setDefaultAddress(b.getAttribute('data-def')); viewAddresses(); }); });
+    document.querySelectorAll('[data-del]').forEach(function (b) { b.addEventListener('click', function () { V.confirm('Supprimer cette adresse ?', 'Cette adresse sera retirée de votre carnet.', 'Supprimer', true).then(function (ok) { if (ok) { V.deleteAddress(b.getAttribute('data-del')); viewAddresses(); } }); }); });
+  }
+
+  function viewWish() {
+    var items = V.getWish().map(V.productBySlug).filter(Boolean);
+    var inner = items.length ? '<div class="s-prods" style="grid-template-columns:repeat(3,minmax(0,1fr))">' + items.map(function (p) { return V.productCardHtml(p).replace('<div class="bd">', '<div class="bd"><button class="link-plain" data-unwish="' + p.slug + '" style="align-self:flex-start;color:var(--gray-soft)">Retirer ✕</button>'); }).join('') + '</div>'
+      : '<div class="s-card"><div class="s-empty" style="padding:40px 20px">' + V.ICON.bag + '<h3>Votre liste de souhaits est vide</h3><p>Ajoutez des produits en favoris depuis leur fiche pour les retrouver ici.</p><a class="btn-primary" href="index.html#produits">Découvrir les produits</a></div></div>';
+    shell('favoris', 'Ma liste de souhaits', inner);
+    V.bindAddButtons(root);
+    document.querySelectorAll('[data-unwish]').forEach(function (b) { b.addEventListener('click', function () { V.toggleWish(b.getAttribute('data-unwish')); viewWish(); }); });
+  }
+
+  function viewProfile() {
+    var u = V.currentUser();
+    var inner = '<div class="s-card pad" style="margin-bottom:20px"><h2>Informations personnelles</h2><form id="pf" novalidate><div class="s-form-grid">' +
+      field('firstName', 'Prénom', { value: u.firstName }) + field('lastName', 'Nom', { value: u.lastName }) +
+      '<div class="s-field full"><label>Adresse e-mail</label><input class="s-input" value="' + esc(u.email) + '" disabled></div>' +
+      field('phone', 'Téléphone', { type: 'tel', full: true, ph: '22 123 456', err: 'Numéro tunisien à 8 chiffres', value: u.phone || '' }) + '</div>' +
+      '<label class="s-check" style="margin-top:14px"><input type="checkbox" id="nl"' + (u.newsletter ? ' checked' : '') + '> Recevoir les nouveautés et conseils VITAL par e-mail</label>' +
+      '<div class="s-alert ok" id="pmsg" style="margin-top:14px"></div><div style="margin-top:18px"><button class="btn-primary" type="submit">Enregistrer</button></div></form></div>' +
+      '<div class="s-card pad"><h2>Mot de passe</h2><form id="wf" novalidate><div class="s-form-grid">' +
+      field('old', 'Mot de passe actuel', { type: 'password', full: true, err: 'Saisissez votre mot de passe actuel' }) +
+      field('pw', 'Nouveau mot de passe', { type: 'password', auto: 'new-password', err: '8 caractères minimum' }) + field('pw2', 'Confirmer', { type: 'password', auto: 'new-password', err: 'Les mots de passe ne correspondent pas' }) + '</div>' +
+      '<div class="s-alert err" id="wmsg" style="margin-top:14px"></div><div style="margin-top:18px"><button class="btn-primary" type="submit">Changer le mot de passe</button></div></form></div>';
+    shell('profil', 'Mes informations', inner);
+    $('pf').addEventListener('submit', function (e) {
+      e.preventDefault(); var ok = true;
+      ['firstName', 'lastName'].forEach(function (id) { ok = setInvalid(id, !val(id)) && ok; }); ok = setInvalid('phone', !V.isPhone(val('phone'))) && ok;
+      if (!ok) return;
+      V.updateUser({ firstName: val('firstName'), lastName: val('lastName'), phone: val('phone'), newsletter: $('nl').checked });
+      showAlert('pmsg', 'Vos informations ont été mises à jour.', 'ok');
+      document.querySelector('.s-acc nav .who b').textContent = val('firstName') + ' ' + val('lastName');
+    });
+    $('wf').addEventListener('submit', function (e) {
+      e.preventDefault(); var ok = setInvalid('old', !$('old').value); ok = setInvalid('pw', $('pw').value.length < 8) && ok; ok = setInvalid('pw2', $('pw').value !== $('pw2').value) && ok;
+      if (!ok) return;
+      V.changePassword($('old').value, $('pw').value).then(function (r) {
+        if (!r.ok) showAlert('wmsg', r.error); else { showAlert('wmsg', 'Votre mot de passe a été modifié.', 'ok'); $('old').value = $('pw').value = $('pw2').value = ''; }
+      });
+    });
+  }
+
+  /* ======================= Routage ======================= */
+  var PUBLIC = { connexion: viewLogin, inscription: viewRegister, 'mot-de-passe-oublie': viewForgot };
+  var PRIVATE = { 'tableau-de-bord': viewDashboard, commandes: viewOrders, adresses: viewAddresses, favoris: viewWish, profil: viewProfile };
+  function route() {
+    var h = decodeURIComponent((location.hash || '').replace(/^#/, '')), user = V.currentUser();
+    var parts = h.split('/'), key = parts[0];
+    document.title = 'Mon compte — VITAL Laboratoires';
+    if (!user) {
+      if (!PUBLIC[key]) { history.replaceState(null, '', location.pathname + location.search + '#connexion'); key = 'connexion'; }
+      PUBLIC[key](); window.scrollTo(0, 0); return;
+    }
+    if (PUBLIC[key] || !key) { history.replaceState(null, '', location.pathname + '#tableau-de-bord'); key = 'tableau-de-bord'; }
+    if (key === 'commande' && parts[1]) viewOrder(parts[1]);
+    else if (PRIVATE[key]) PRIVATE[key]();
+    else { history.replaceState(null, '', location.pathname + '#tableau-de-bord'); viewDashboard(); }
+    window.scrollTo(0, 0);
+  }
+  root.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-toggle]'); if (!t) return;
+    var i = $(t.getAttribute('data-toggle')), show = i.type === 'password';
+    i.type = show ? 'text' : 'password'; t.textContent = show ? 'Masquer' : 'Afficher';
+  });
+  root.addEventListener('input', function (e) { var w = e.target.closest('.s-field'); if (w) w.classList.remove('invalid'); if (e.target.id === 'cg') $('cg-w').classList.remove('invalid'); });
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>

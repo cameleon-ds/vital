@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mon panier — VITAL Laboratoires</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shop.css">
+<link rel="stylesheet" href="assets/buttons.css">
+</head>
+<body data-no-drawer>
+<div id="site-top"></div>
+
+<main class="s-page">
+  <div class="s-crumbs"><a href="index.html">Accueil</a> / Panier</div>
+  <h1 class="s-title">Mon panier</h1>
+  <p class="s-lead" id="lead"></p>
+  <div id="cart-root"></div>
+  <div id="suggest-root"></div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/catalogue.js"></script>
+<script src="assets/shop.js"></script>
+<script>
+(function () {
+  var V = window.VITAL, esc = V.escapeHtml, money = V.fmtMoney;
+  V.mountChrome({ active: '' });
+  var root = document.getElementById('cart-root');
+  var lead = document.getElementById('lead');
+  function showPromoMsg(r) { var m = document.getElementById('promo-msg'); if (m) { m.textContent = r.msg; m.className = 's-promo-msg ' + (r.ok ? 'ok' : 'err'); } }
+
+  function lineHtml(l) {
+    var p = l.product;
+    return '<div class="s-line">' +
+      '<a class="img" href="producto.html?p=' + p.slug + '"><img src="' + p.image + '" alt="' + esc(p.name) + '"></a>' +
+      '<div><a class="nm" href="producto.html?p=' + p.slug + '">' + esc(p.name) + '</a>' +
+        '<div class="sb">' + esc(p.sub) + ' · ' + esc(p.size) + '</div>' +
+        '<div class="unit">' + (p.price === null ? '<span class="nopr">Prix à confirmer</span>' : 'Prix unitaire : ' + money(p.price)) + '</div>' +
+        '<button class="rm" data-act="rm" data-id="' + p.id + '">Supprimer</button></div>' +
+      '<div class="ctl"><div class="s-qty"><button data-act="dec" data-id="' + p.id + '" aria-label="Diminuer la quantité">−</button><span>' + l.qty + '</span><button data-act="inc" data-id="' + p.id + '" aria-label="Augmenter la quantité">+</button></div></div>' +
+      '<div class="tot">' + (l.total === null ? '—' : money(l.total)) + '</div></div>';
+  }
+
+  function render() {
+    var lines = V.cartLines(), t = V.computeTotals(lines, null);
+    lead.textContent = lines.length ? t.count + ' article' + (t.count > 1 ? 's' : '') + ' dans votre panier' : '';
+    if (!lines.length) {
+      root.innerHTML = '<div class="s-card"><div class="s-empty">' + V.ICON.bag + '<h3>Votre panier est vide</h3><p>Vous n’avez pas encore ajouté de produit. Parcourez nos gammes MS, AWA et VIP Skin pour trouver le soin qui vous convient.</p><a href="index.html#produits" class="btn-primary">Découvrir les produits</a></div></div>';
+      renderSuggestions(lines);
+      return;
+    }
+    var user = V.currentUser();
+    var code = t.promo;
+    var checkoutDisabled = t.unpriced > 0;
+    root.innerHTML =
+      '<div class="s-layout">' +
+        '<div>' +
+          V.shipBarHtml(t) +
+          '<div class="s-card pad" style="padding-top:8px;padding-bottom:8px">' + lines.map(lineHtml).join('') + '</div>' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;flex-wrap:wrap;gap:10px">' +
+            '<a href="index.html#produits" class="link-underline">← Continuer mes achats</a>' +
+            '<button class="link-plain" id="clear">Vider le panier</button>' +
+          '</div>' +
+        '</div>' +
+        '<aside class="s-sticky"><div class="s-card pad s-sum">' +
+          '<h2>Récapitulatif</h2>' +
+          '<div class="row"><span>Sous-total</span><b>' + money(t.subtotal) + '</b></div>' +
+          (t.discount ? '<div class="row disc"><span>Code ' + esc(code) + '</span><b>−' + money(t.discount) + '</b></div>' : '') +
+          '<div class="row"><span>Livraison</span><b>' + (t.freeShip ? 'Offerte dès cette étape' : 'Calculée à l’étape suivante') + '</b></div>' +
+          '<div class="row total"><span>Total</span><b>' + money(t.net) + '</b></div>' +
+          '<div class="s-promo"><input class="s-input" id="promo" placeholder="Code promo" value="' + esc(code) + '" autocomplete="off">' +
+            '<button class="btn-ghost btn-sm" id="promo-ok">' + (code ? 'Retirer' : 'Appliquer') + '</button></div>' +
+          '<div class="s-promo-msg" id="promo-msg"></div>' +
+          (checkoutDisabled ? '<div class="s-alert warn show" style="margin-bottom:12px">Un article de votre panier n’a pas encore de prix : retirez-le pour passer commande.</div>' : '') +
+          '<a href="commande.html" class="btn-primary btn-block' + (checkoutDisabled ? ' is-disabled" aria-disabled="true" onclick="return false;' : '') + '" id="go">Passer la commande</a>' +
+          (!user ? '<div class="s-muted" style="text-align:center;margin-top:12px">Déjà client ? <a class="link-plain" href="compte.html?next=commande.html#connexion">Connectez-vous</a> pour gagner du temps.</div>' : '') +
+          '<div class="s-trust">' +
+            '<div>' + V.ICON.lock + ' Paiement sécurisé par carte, mobile ou à la livraison</div>' +
+            '<div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg> Livraison partout en Tunisie</div>' +
+            '<div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg> Retours sous [14] jours</div>' +
+          '</div>' +
+        '</div></aside>' +
+      '</div>';
+    renderSuggestions(lines);
+  }
+
+  function renderSuggestions(lines) {
+    var inCart = {}; lines.forEach(function (l) { inCart[l.product.id] = true; });
+    var cats = {}; lines.forEach(function (l) { cats[l.product.category] = true; });
+    var pool = V.PRODUCTS.filter(function (p) { return !inCart[p.id]; });
+    pool.sort(function (a, b) { return (cats[b.category] ? 1 : 0) - (cats[a.category] ? 1 : 0); });
+    var list = pool.slice(0, 4);
+    var el = document.getElementById('suggest-root');
+    if (!list.length) { el.innerHTML = ''; return; }
+    el.innerHTML = '<div class="s-section-h"><h2>' + (lines.length ? 'Vous aimerez aussi' : 'Nos produits') + '</h2><a href="index.html#produits" class="link-plain">Tout voir</a></div><div class="s-prods">' + list.map(V.productCardHtml).join('') + '</div>';
+    V.bindAddButtons(el);
+  }
+
+  root.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]'), c = V.getCart();
+    if (b) {
+      var id = b.getAttribute('data-id'), a = b.getAttribute('data-act');
+      if (a === 'inc') V.setQty(id, (c[id] || 0) + 1);
+      else if (a === 'dec') V.setQty(id, (c[id] || 0) - 1);
+      else if (a === 'rm') { V.removeFromCart(id); V.toast('Article retiré du panier'); }
+      return;
+    }
+    if (e.target.id === 'clear') {
+      V.confirm('Vider le panier ?', 'Tous les articles de votre panier seront retirés.', 'Vider le panier', true).then(function (ok) { if (ok) V.clearCart(); });
+    } else if (e.target.id === 'promo-ok') {
+      var r;
+      if (V.getPromo()) { V.clearPromo(); r = { ok: true, msg: 'Code promo retiré.' }; }
+      else r = V.applyPromo(document.getElementById('promo').value);
+      showPromoMsg(r);   // le rendu est synchrone : le message s'affiche dans le nouveau DOM
+    }
+  });
+  root.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.id === 'promo') { e.preventDefault(); if (!V.getPromo()) document.getElementById('promo-ok').click(); } });
+  document.addEventListener('vital:cart', render);
+  // le bouton « + » des suggestions ajoute sans ouvrir le tiroir ; la page se met à jour via vital:cart
+  render();
+})();
+</script>
+</body>
+</html>

@@ -8,13 +8,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shop.css">
 <style>
   :root {
     --ink: #363B42;
     --ink-strong: #2A2E34;
     --gray: #6B7280;
     --gray-soft: #7B818A;
-    --purple: #8B5D91;
+    --purple: #72C6C7;
     --border: #E3E5E8;
     --bg-soft: #F7F6F7;
   }
@@ -106,7 +107,7 @@
   .card { border: 1px solid #ECEAEC; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; background: #fff; transition: box-shadow 0.18s ease, transform 0.18s ease; }
   .card:hover { box-shadow: 0 12px 28px rgba(54,59,66,0.10); transform: translateY(-2px); }
   .card .thumb { aspect-ratio: 1 / 1; background: #fff; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid #F1EFF1; }
-  .card a.name:hover { color: var(--purple); }
+  .card a.name:hover { color: var(--accent-text); }
   .card .thumb img { width: 100%; height: 100%; object-fit: contain; }
   .card .size { font-size: 12px; color: var(--gray-soft); }
   .card .sub { font-size: 12px; color: var(--gray); line-height: 1.4; }
@@ -114,7 +115,7 @@
   .cart-badge { min-width: 16px; padding: 0 4px; border-radius: 999px; width: auto; }
   .card .cat-tag { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.9); color: var(--gray); font-size: 10px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; }
   .card .body { padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 6px; flex-grow: 1; }
-  .card .type { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 0.03em; text-transform: uppercase; }
+  .card .type { font-size: 11px; font-weight: 700; color: var(--accent-text); letter-spacing: 0.03em; text-transform: uppercase; }
   .card .name { font-size: 15px; font-weight: 700; color: var(--ink-strong); line-height: 1.3; }
   .card .row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
   .card .price { font-size: 16px; font-weight: 800; color: var(--ink-strong); }
@@ -146,6 +147,7 @@
   .footer-bottom { max-width: 1280px; margin: 0 auto; padding: 20px 40px; border-top: 1px solid #ECEAEC; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
   .footer-bottom span { font-size: 12px; color: #9AA0A8; }
 </style>
+<link rel="stylesheet" href="assets/buttons.css">
 </head>
 <body>
 
@@ -189,19 +191,19 @@
 
   <section class="value-props">
     <div class="value-prop">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8B5D91" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
       <div><div class="title">Livraison rapide</div><div class="sub">Partout en Tunisie</div></div>
     </div>
     <div class="value-prop">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8B5D91" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"></path></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"></path></svg>
       <div><div class="title">Paiement sécurisé</div><div class="sub">Transactions protégées</div></div>
     </div>
     <div class="value-prop">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8B5D91" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
       <div><div class="title">Conseil pharmacien</div><div class="sub">Une équipe à votre écoute</div></div>
     </div>
     <div class="value-prop">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8B5D91" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
       <div><div class="title">Retours faciles</div><div class="sub">Sous [14] jours</div></div>
     </div>
   </section>
@@ -282,6 +284,7 @@
 </footer>
 
 <script src="assets/catalogue.js"></script>
+<script src="assets/shop.js"></script>
 <script>
 (function () {
   var V = window.VITAL;
@@ -289,9 +292,9 @@
   var escapeHtml = V.escapeHtml, catByKey = V.catByKey;
 
   var HERO_SLIDES = [
-    { badge: 'VIP Skin — Equilibrium', badgeColor: '#5E6470', title: 'Des soins visage pour rééquilibrer votre peau', sub: 'Sérum rénovateur, Green Cream, gel hydratation active et filtre solaire SPF 50+ : la gamme VIP Skin.', bg: 'linear-gradient(135deg, #F1F0F2 0%, #E4E3E7 100%)', cat: 'vip',  image: 'assets/produits/vip-skin-green-cream.jpg' },
-    { badge: 'AWA',                    badgeColor: '#3A5A94', title: 'Peaux grasses et obstruées : retrouvez l’équilibre', sub: 'Complexe équilibrant, mousse purifiante et gel matifiant teinté SPF 50+ pour une peau nette et matifiée.', bg: 'linear-gradient(135deg, #EDF3F6 0%, #DDE8EE 100%)', cat: 'awa', image: 'assets/produits/awa-mousse-purifiante.jpg' },
-    { badge: 'MS — IDP Medical Skin',  badgeColor: '#2F4A6B', title: 'Les soins dermatologiques de la peau', sub: 'Lotion atopic, protection solaire familiale, nettoyant purifiant et shampooings pour le cuir chevelu.', bg: 'linear-gradient(135deg, #ECEFF4 0%, #DEE3EC 100%)', cat: 'ms',  image: 'assets/produits/ms-atopic-lotion.jpg' }
+    { badge: 'VIP Skin — Equilibrium', badgeColor: '#72C6C7', title: 'Des soins visage pour rééquilibrer votre peau', sub: 'Sérum rénovateur, Green Cream, gel hydratation active et filtre solaire SPF 50+ : la gamme VIP Skin.', bg: 'linear-gradient(135deg, #F1F0F2 0%, #E4E3E7 100%)', cat: 'vip',  image: 'assets/produits/vip-skin-green-cream.jpg' },
+    { badge: 'AWA',                    badgeColor: '#72C6C7', title: 'Peaux grasses et obstruées : retrouvez l’équilibre', sub: 'Complexe équilibrant, mousse purifiante et gel matifiant teinté SPF 50+ pour une peau nette et matifiée.', bg: 'linear-gradient(135deg, #EDF3F6 0%, #DDE8EE 100%)', cat: 'awa', image: 'assets/produits/awa-mousse-purifiante.jpg' },
+    { badge: 'MS — IDP Medical Skin',  badgeColor: '#72C6C7', title: 'Les soins dermatologiques de la peau', sub: 'Lotion atopic, protection solaire familiale, nettoyant purifiant et shampooings pour le cuir chevelu.', bg: 'linear-gradient(135deg, #ECEFF4 0%, #DEE3EC 100%)', cat: 'ms',  image: 'assets/produits/ms-atopic-lotion.jpg' }
   ];
 
   var state = { slide: 0, category: 'tous', type: 'tous', query: '' };

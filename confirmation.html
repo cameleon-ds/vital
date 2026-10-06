@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commande confirmée — VITAL Laboratoires</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shop.css">
+<link rel="stylesheet" href="assets/buttons.css">
+</head>
+<body>
+<div id="site-top"></div>
+<main class="s-page" id="root"></main>
+<div id="site-footer"></div>
+
+<script src="assets/catalogue.js"></script>
+<script src="assets/shop.js"></script>
+<script>
+(function () {
+  var V = window.VITAL, esc = V.escapeHtml, money = V.fmtMoney;
+  V.mountChrome({ active: '' });
+  var root = document.getElementById('root');
+  var o = V.getOrder(V.qs('o') || '');
+
+  if (!o || !V.canViewOrder(o)) {
+    root.innerHTML = '<div class="s-card"><div class="s-empty">' + V.ICON.bag + '<h3>Commande introuvable</h3><p>Nous ne retrouvons pas cette commande. Si vous avez un compte, retrouvez toutes vos commandes dans votre espace client.</p><a href="compte.html#commandes" class="btn-primary">Mes commandes</a></div></div>';
+    return;
+  }
+  var guest = !V.currentUser();
+  var cod = o.payment.key === 'cod';
+  var tl = [['Confirmée', 'done'], ['En préparation', 'cur'], ['Expédiée', ''], ['Livrée', '']];
+
+  root.innerHTML =
+    '<div class="s-done"><div class="ck"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' +
+      '<h1>Merci ' + esc(o.contact.firstName) + ', votre commande est confirmée !</h1>' +
+      '<p>Un e-mail de confirmation a été envoyé à <b>' + esc(o.email) + '</b>. ' + (cod ? 'Vous réglerez ' + (o.delivery.key === 'pickup' ? 'en pharmacie au retrait' : 'à la livraison') + '.' : 'Votre paiement a bien été reçu.') + '</p>' +
+      '<span class="ref">Commande ' + esc(o.id) + '</span>' +
+      '<div class="s-actions"><a class="btn-primary" href="' + (guest ? 'index.html#produits' : 'compte.html#commande/' + encodeURIComponent(o.id)) + '">' + (guest ? 'Continuer mes achats' : 'Suivre ma commande') + '</a><a class="btn-ghost" href="index.html">Retour à l’accueil</a></div></div>' +
+
+    '<div class="s-layout"><div>' +
+      '<div class="s-card pad" style="margin-bottom:20px"><h2>Suivi de la commande</h2><div class="s-timeline">' + tl.map(function (s) { return '<div class="tl ' + s[1] + '"><i>' + (s[1] === 'done' ? V.ICON.check : '') + '</i>' + s[0] + '</div>'; }).join('') + '</div>' +
+        '<p class="s-muted" style="margin:16px 0 0">Livraison estimée : <b>' + esc(o.delivery.eta) + '</b></p></div>' +
+      '<div class="s-card pad"><h2>Articles (' + o.lines.reduce(function (s, l) { return s + l.qty; }, 0) + ')</h2>' +
+        o.lines.map(function (l) { return '<div class="s-line compact"><div class="img"><img src="' + l.image + '" alt=""><b>' + l.qty + '</b></div><div><a class="nm" href="producto.html?p=' + l.slug + '">' + esc(l.name) + '</a><div class="sb">' + esc(l.size) + '</div></div><div class="tot">' + money(l.price * l.qty) + '</div></div>'; }).join('') + '</div>' +
+    '</div>' +
+    '<aside><div class="s-card pad s-sum"><h2>Détails</h2>' +
+      '<div class="s-kv" style="grid-template-columns:1fr;gap:16px">' +
+        '<div><div class="k">Livraison</div><div class="vv"><b>' + esc(o.delivery.label) + '</b><br>' + esc(o.address.firstName + ' ' + o.address.lastName) + '<br>' + V.lineAddress(o.address) + '<br>' + esc(V.fmtPhone(o.address.phone)) + '</div></div>' +
+        '<div><div class="k">Paiement</div><div class="vv">' + esc(o.payment.label) + '<br><span class="s-muted">' + esc(o.payment.status) + '</span></div></div>' +
+        (o.note ? '<div><div class="k">Instructions</div><div class="vv">' + esc(o.note) + '</div></div>' : '') +
+      '</div><hr class="s-sep">' +
+      '<div class="row"><span>Sous-total</span><b>' + money(o.subtotal) + '</b></div>' +
+      (o.discount ? '<div class="row disc"><span>Code ' + esc(o.promo) + '</span><b>−' + money(o.discount) + '</b></div>' : '') +
+      '<div class="row"><span>Livraison</span><b>' + (o.shipping === 0 ? 'Offerte' : money(o.shipping)) + '</b></div>' +
+      '<div class="row total"><span>Total</span><b>' + money(o.total) + '</b></div>' +
+    '</div>' +
+    (guest ? '<div class="s-card pad" style="margin-top:20px;background:var(--purple-soft);border-color:#CBEBEB"><h3>Gardez une trace de vos commandes</h3><p class="s-muted" style="margin:0 0 14px">Créez un compte avec ' + esc(o.email) + ' pour suivre vos commandes et recommander en un clic.</p><a class="btn-purple btn-sm" href="compte.html?email=' + encodeURIComponent(o.email) + '#inscription">Créer mon compte</a></div>' : '') +
+    '</aside></div>';
+})();
+</script>
+</body>
+</html>
