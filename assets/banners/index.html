@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VITAL Laboratoires — Boutique en ligne</title>
+<meta name="description" content="VITAL Laboratoires — soins dermatologiques MS, AWA et VIP Skin pour le visage, le corps et le cuir chevelu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shop.css">
+<style>
+  :root {
+    --ink: #363B42;
+    --ink-strong: #2A2E34;
+    --gray: #6B7280;
+    --gray-soft: #7B818A;
+    --purple: #72C6C7;
+    --border: #E3E5E8;
+    --bg-soft: #F7F6F7;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Manrope', sans-serif; -webkit-font-smoothing: antialiased; color: var(--ink); background: #fff; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+  input, select { font-family: inherit; }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+  @media (max-width: 900px) { .wrap { padding: 0 20px; } }
+
+  /* Top bar */
+  .topbar { background: var(--ink); color: #E7E4E8; text-align: center; padding: 8px 20px; font-size: 12px; letter-spacing: 0.04em; font-weight: 500; }
+
+  /* Header */
+  header { border-bottom: 1px solid #E9E7EA; position: sticky; top: 0; background: #fff; z-index: 20; }
+  header .wrap { display: flex; align-items: center; gap: 40px; padding-top: 18px; padding-bottom: 18px; }
+  header .logo img { height: 48px; width: auto; }
+  nav.main-nav { flex-grow: 1; display: flex; gap: 32px; align-items: center; flex-wrap: wrap; }
+  nav.main-nav a { font-size: 14px; font-weight: 600; color: var(--gray); }
+  nav.main-nav a.active, nav.main-nav a:hover { color: var(--ink-strong); }
+  .header-icons { display: flex; align-items: center; gap: 22px; flex-shrink: 0; }
+  .header-icons button { background: none; border: none; padding: 4px; color: var(--ink); display: flex; position: relative; }
+  .cart-badge { position: absolute; top: -6px; right: -8px; background: var(--purple); color: #fff; font-size: 10px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+  /* Hero — pleine largeur, défilement latéral, textes animés en cascade */
+  .hero-section { padding: 0; margin: 0; width: 100%; }
+  .hero { position: relative; width: 100%; overflow: hidden; height: clamp(460px, 62vh, 620px); }
+  .hero-track { display: flex; height: 100%; width: 100%; transition: transform 1s cubic-bezier(.77, 0, .18, 1); will-change: transform; }
+  .hero-slide { position: relative; flex: 0 0 100%; width: 100%; height: 100%; display: flex; align-items: center; overflow: hidden; }
+  .hero-inner { position: relative; z-index: 2; width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+  .hero-content { max-width: 520px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
+  .hero-badge { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .hero-title { margin: 0; font-size: 48px; line-height: 1.12; font-weight: 800; color: var(--ink-strong); }
+  .hero-sub { margin: 0; font-size: 16px; line-height: 1.6; color: #565C64; max-width: 440px; }
+  .hero-actions { display: flex; gap: 14px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
+  .btn-primary { background: var(--ink); color: #fff; padding: 14px 28px; border-radius: 999px; font-size: 14px; font-weight: 700; border: none; display: inline-block; }
+  .btn-primary:hover { background: #3A3F47; }
+  .link-underline { font-size: 14px; font-weight: 700; color: var(--ink-strong); border-bottom: 2px solid var(--ink-strong); padding-bottom: 2px; }
+  .hero-art { position: absolute; right: max(40px, calc((100% - 1200px) / 2)); top: 50%; margin-top: -200px; width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; }
+  .hero-art img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+
+  /* Slide avec visuel pleine largeur (photo publicitaire) */
+  .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 70% 18%); z-index: 0; transform-origin: 70% 40%; }
+  .hero-veil { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(90deg, rgba(247, 240, 229, .78) 0%, rgba(247, 240, 229, .45) 28%, rgba(247, 240, 229, 0) 46%); }
+  .hero-slide.has-banner .hero-content { max-width: 430px; }
+  .hero-slide.has-banner .hero-title { font-size: 42px; }
+  .hero-slide.has-banner .hero-sub { max-width: 400px; }
+  .hero-slide.active .hero-bg { animation: heroZoom 7s cubic-bezier(.22, 1, .36, 1) backwards; }
+  @keyframes heroZoom { from { transform: scale(1.08); opacity: .6; } to { transform: none; opacity: 1; } }
+
+  /* Entrée en cascade : badge → titre → texte → boutons (le produit arrive de la droite) */
+  .hero-slide.active .anim { animation: heroUp .9s cubic-bezier(.22, 1, .36, 1) backwards; animation-delay: calc(.45s + var(--i, 0) * .16s); }
+  .hero-slide.active .hero-art img { animation: heroArt 1.2s cubic-bezier(.22, 1, .36, 1) .35s backwards; }
+  @keyframes heroUp { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
+  @keyframes heroArt { from { opacity: 0; transform: translateX(90px) scale(.92); } to { opacity: 1; transform: none; } }
+  .hero-badge.anim { position: relative; padding-left: 0; }
+  .hero-slide.active .hero-badge::after { content: ''; display: block; height: 2px; background: currentColor; margin-top: 8px; animation: heroLine 1s cubic-bezier(.22, 1, .36, 1) .9s backwards; width: 44px; transform-origin: left; }
+  @keyframes heroLine { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* Contrôles */
+  .hero-dots { position: absolute; bottom: 28px; left: 0; right: 0; z-index: 3; max-width: 1280px; margin: 0 auto; padding: 0 40px; display: flex; gap: 8px; align-items: center; pointer-events: none; }
+  .hero-dots .dot { pointer-events: auto; }
+  .dot { position: relative; height: 4px; border-radius: 0; border: none; padding: 0; cursor: pointer; transition: width .5s cubic-bezier(.22, 1, .36, 1), background .3s ease; background: rgba(54, 59, 66, .22); width: 28px; overflow: hidden; }
+  .dot.active { background: rgba(54, 59, 66, .22); width: 64px; }
+  .dot i { position: absolute; inset: 0; background: var(--purple); transform: scaleX(0); transform-origin: left; }
+  .dot.active i { animation: heroProgress var(--dur, 6s) linear forwards; }
+  .hero.paused .dot.active i { animation-play-state: paused; }
+  @keyframes heroProgress { to { transform: scaleX(1); } }
+  .hero-arrow { position: absolute; top: 50%; margin-top: -24px; width: 48px; height: 48px; z-index: 3; background: rgba(255, 255, 255, .85); border: 1px solid var(--border); color: var(--ink-strong); display: flex; align-items: center; justify-content: center; padding: 0; opacity: 0; transition: opacity .3s ease, background .3s ease, transform .3s ease; }
+  .hero:hover .hero-arrow { opacity: 1; }
+  .hero-arrow:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
+  .hero-arrow.prev { left: 24px; }
+  .hero-arrow.next { right: 24px; }
+  @media (max-width: 1100px) { .hero-art { width: 320px; height: 320px; margin-top: -160px; } .hero-title, .hero-slide.has-banner .hero-title { font-size: 36px; } .hero-slide.has-banner .hero-content { max-width: 330px; } .hero-veil { background: linear-gradient(90deg, rgba(247, 240, 229, .85) 0%, rgba(247, 240, 229, .55) 34%, rgba(247, 240, 229, 0) 55%); } }
+  @media (max-width: 720px) {
+    .hero { height: auto; min-height: 480px; }
+    .hero-track { height: auto; }
+    .hero-slide { min-height: 480px; }
+    .hero-inner, .hero-dots { padding: 0 20px; }
+    .hero-art { display: none; }
+    .hero-title, .hero-slide.has-banner .hero-title { font-size: 30px; }
+    .hero-slide.has-banner { flex-direction: column; align-items: stretch; justify-content: flex-start; min-height: 0; }
+    .hero-slide.has-banner .hero-inner { padding-top: 32px; padding-bottom: 8px; }
+    .hero-slide.has-banner .hero-content { max-width: 100%; }
+    .hero-slide.has-banner .hero-bg { position: relative; inset: auto; order: 2; height: 300px; object-position: 80% 30%; flex: 0 0 auto; }
+    .hero-veil { display: none; }
+    .hero-arrow { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-track { transition-duration: .01s; }
+    .hero-slide.active .anim, .hero-slide.active .hero-art img, .hero-slide.active .hero-bg, .hero-slide.active .hero-badge::after { animation: none; }
+  }
+
+  /* Value props */
+  .value-props { max-width: 1280px; margin: 0 auto; padding: 48px 40px 8px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+  .value-prop { display: flex; gap: 14px; align-items: flex-start; }
+  .value-prop svg { flex-shrink: 0; margin-top: 2px; }
+  .value-prop .title { font-size: 14px; font-weight: 700; color: var(--ink-strong); }
+  .value-prop .sub { font-size: 13px; color: var(--gray-soft); margin-top: 2px; }
+  @media (max-width: 900px) { .value-props { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  /* Section heads */
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 8px; }
+  .section-head h2 { margin: 0; font-size: 26px; font-weight: 800; color: var(--ink-strong); }
+  .section-head .note { font-size: 13px; color: var(--gray-soft); }
+
+  /* Categories */
+  .categories { max-width: 1280px; margin: 40px auto 0; padding: 24px 40px 0; }
+  .cat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .cat-card { position: relative; overflow: hidden; border-radius: 16px; padding: 32px 28px; display: flex; flex-direction: column; gap: 14px; min-height: 220px; transition: box-shadow 0.18s ease, transform 0.18s ease; }
+  .cat-card img { position: absolute; right: 8px; bottom: 0; height: 200px; width: 200px; object-fit: contain; mix-blend-mode: multiply; }
+  .cat-card .desc { font-size: 13px; line-height: 1.5; max-width: 170px; margin-top: 6px; }
+  .cat-card:hover { box-shadow: 0 12px 28px rgba(54,59,66,0.10); transform: translateY(-2px); }
+  .cat-card .name { font-size: 18px; font-weight: 700; color: var(--ink-strong); margin-top: auto; }
+  .cat-card .count { font-size: 13px; margin-top: 4px; }
+  @media (max-width: 900px) { .cat-grid { grid-template-columns: 1fr; } }
+
+  /* Filters */
+  .products { max-width: 1280px; margin: 56px auto 0; padding: 24px 40px 0; }
+  .filters { display: flex; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+  .search-wrap { flex-grow: 1; min-width: 240px; position: relative; }
+  .search-wrap svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); }
+  .search-wrap input { width: 100%; padding: 13px 16px 13px 44px; border-radius: 10px; border: 1px solid var(--border); font-size: 14px; color: var(--ink-strong); outline: none; }
+  .filters select { padding: 13px 16px; border-radius: 10px; border: 1px solid var(--border); font-size: 14px; color: var(--ink-strong); background: #fff; min-width: 200px; }
+  .pills { display: flex; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
+  .pill { padding: 10px 18px; border-radius: 999px; border: 1px solid var(--border); font-size: 13px; font-weight: 600; background: #fff; color: var(--ink-strong); }
+  .pill:hover { border-color: var(--purple); }
+  .pill.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  /* Product grid */
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; padding-bottom: 8px; }
+  @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 760px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .card { border: 1px solid #ECEAEC; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; background: #fff; transition: box-shadow 0.18s ease, transform 0.18s ease; }
+  .card:hover { box-shadow: 0 12px 28px rgba(54,59,66,0.10); transform: translateY(-2px); }
+  .card .thumb { aspect-ratio: 1 / 1; background: #fff; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid #F1EFF1; }
+  .card a.name:hover { color: var(--accent-text); }
+  .card .thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .card .size { font-size: 12px; color: var(--gray-soft); }
+  .card .sub { font-size: 12px; color: var(--gray); line-height: 1.4; }
+  .card .price.tbd { font-size: 13px; font-weight: 600; color: var(--gray-soft); }
+  .cart-badge { min-width: 16px; padding: 0 4px; border-radius: 999px; width: auto; }
+  .card .cat-tag { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.9); color: var(--gray); font-size: 10px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; }
+  .card .body { padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 6px; flex-grow: 1; }
+  .card .type { font-size: 11px; font-weight: 700; color: var(--accent-text); letter-spacing: 0.03em; text-transform: uppercase; }
+  .card .name { font-size: 15px; font-weight: 700; color: var(--ink-strong); line-height: 1.3; }
+  .card .row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .card .price { font-size: 16px; font-weight: 800; color: var(--ink-strong); }
+  .add-btn { background: var(--ink); border: none; color: #fff; width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .add-btn:hover { background: #3A3F47; }
+  .empty-state { padding: 60px 0; text-align: center; color: var(--gray-soft); font-size: 14px; }
+  .results-count { font-size: 13px; color: var(--gray-soft); }
+
+  /* Newsletter */
+  .newsletter-section { max-width: 1280px; margin: 64px auto 0; padding: 0 40px; }
+  .newsletter { background: var(--ink); border-radius: 20px; padding: 44px 56px; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+  .newsletter .title { font-size: 20px; font-weight: 800; color: #fff; }
+  .newsletter .sub { font-size: 14px; color: #B9BCC1; margin-top: 8px; max-width: 420px; }
+  .newsletter-form { display: flex; gap: 10px; flex-grow: 1; max-width: 420px; min-width: 260px; }
+  .newsletter-form input { flex-grow: 1; padding: 14px 16px; border-radius: 10px; border: none; font-size: 14px; outline: none; }
+  .newsletter-form button { background: var(--purple); color: #fff; border: none; padding: 14px 24px; border-radius: 10px; font-size: 14px; font-weight: 700; white-space: nowrap; }
+  .newsletter-form button:hover { opacity: 0.92; }
+
+  /* Footer */
+  footer { margin-top: 72px; background: #fff; border-top: 1px solid #ECEAEC; }
+  .footer-grid { max-width: 1280px; margin: 0 auto; padding: 56px 40px 28px; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; }
+  @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+  .footer-col { display: flex; flex-direction: column; gap: 12px; }
+  .footer-col .logo { align-self: flex-start; }
+  .footer-col img { height: 48px; width: auto; }
+  .footer-col p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--gray-soft); max-width: 260px; }
+  .footer-col .head { font-size: 13px; font-weight: 700; color: var(--ink-strong); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 4px; }
+  .footer-col a, .footer-col span { font-size: 13px; color: var(--gray); }
+  .footer-bottom { max-width: 1280px; margin: 0 auto; padding: 20px 40px; border-top: 1px solid #ECEAEC; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .footer-bottom span { font-size: 12px; color: #9AA0A8; }
+</style>
+<link rel="stylesheet" href="assets/buttons.css">
+</head>
+<body>
+
+<div class="topbar">Livraison offerte dès [50&nbsp;€] d'achat — Conseil pharmacien inclus</div>
+
+<header>
+  <div class="wrap">
+    <a href="#top" class="logo"><img src="assets/logo.png" alt="VITAL Laboratoires"></a>
+    <nav class="main-nav">
+      <a href="#top" class="active">Accueil</a>
+      <a href="#categories">Catégories</a>
+      <a href="#produits">Produits</a>
+      <a href="#apropos">À propos</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="header-icons">
+      <button aria-label="Rechercher"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+      <button aria-label="Mon compte"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></button>
+      <button aria-label="Panier"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg><span class="cart-badge">0</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero-section" aria-roledescription="carrousel" aria-label="À la une">
+    <div class="hero" id="hero">
+      <div class="hero-track" id="hero-track"></div>
+      <button class="hero-arrow prev" id="hero-prev" aria-label="Diapositive précédente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+      <button class="hero-arrow next" id="hero-next" aria-label="Diapositive suivante"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+      <div class="hero-dots" id="hero-dots"></div>
+    </div>
+  </section>
+
+  <section class="value-props">
+    <div class="value-prop">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+      <div><div class="title">Livraison rapide</div><div class="sub">Partout en Tunisie</div></div>
+    </div>
+    <div class="value-prop">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"></path></svg>
+      <div><div class="title">Paiement sécurisé</div><div class="sub">Transactions protégées</div></div>
+    </div>
+    <div class="value-prop">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+      <div><div class="title">Conseil pharmacien</div><div class="sub">Une équipe à votre écoute</div></div>
+    </div>
+    <div class="value-prop">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+      <div><div class="title">Retours faciles</div><div class="sub">Sous [14] jours</div></div>
+    </div>
+  </section>
+
+  <section class="categories" id="categories">
+    <div class="section-head">
+      <h2>Nos catégories</h2>
+      <span class="note">De nouvelles gammes s'ajoutent régulièrement</span>
+    </div>
+    <div class="cat-grid" id="cat-grid"></div>
+  </section>
+
+  <section class="products" id="produits">
+    <div class="section-head">
+      <h2>Tous nos produits</h2>
+      <span class="results-count" id="results-count"></span>
+    </div>
+
+    <div class="filters">
+      <div class="search-wrap">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9AA0A8" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="search-input" placeholder="Rechercher un produit par nom…">
+      </div>
+      <select id="type-select">
+        <option value="tous">Tous les types de soin</option>
+      </select>
+    </div>
+
+    <div class="pills" id="pills"></div>
+
+    <div class="grid" id="product-grid"></div>
+    <div class="empty-state" id="empty-state" style="display:none;">Aucun produit ne correspond à votre recherche.</div>
+  </section>
+
+  <section class="newsletter-section" id="apropos">
+    <div class="newsletter">
+      <div>
+        <div class="title">Restez informé·e des nouvelles gammes</div>
+        <div class="sub">Conseils bien-être et nouveautés parapharmaceutiques, directement par email.</div>
+      </div>
+      <form class="newsletter-form" onsubmit="return false;">
+        <input type="email" placeholder="Votre adresse email" required>
+        <button type="submit">S'inscrire</button>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contact">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <a href="#top" class="logo"><img src="assets/logo.png" alt="VITAL Laboratoires"></a>
+      <p>Soins dermatologiques de la peau : les gammes MS, AWA et VIP Skin pour le visage, le corps et le cuir chevelu.</p>
+    </div>
+    <div class="footer-col">
+      <div class="head">Navigation</div>
+      <a href="#top">Accueil</a>
+      <a href="#categories">Catégories</a>
+      <a href="#produits">Tous les produits</a>
+      <a href="#apropos">À propos</a>
+    </div>
+    <div class="footer-col">
+      <div class="head">Gammes</div>
+      <div id="footer-cats" style="display:contents;"></div>
+    </div>
+    <div class="footer-col">
+      <div class="head">Contact</div>
+      <span>[Adresse à compléter]</span>
+      <span>[Téléphone]</span>
+      <span>contact@vital.com.tn</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 VITAL Laboratoires. Tous droits réservés.</span>
+    <span>Paiement sécurisé · Livraison en Tunisie</span>
+  </div>
+</footer>
+
+<script src="assets/catalogue.js"></script>
+<script src="assets/shop.js"></script>
+<script>
+(function () {
+  var V = window.VITAL;
+  var CATEGORIES = V.CATEGORIES, TYPE_LABELS = V.TYPE_LABELS, PRODUCTS = V.PRODUCTS;
+  var escapeHtml = V.escapeHtml, catByKey = V.catByKey;
+
+  var HERO_SLIDES = [
+    { badge: 'VIP Skin — Equilibrium', badgeColor: '#72C6C7', title: 'Des soins visage pour rééquilibrer votre peau', sub: 'Sérum rénovateur, Green Cream, gel hydratation active et filtre solaire SPF 50+ : la gamme VIP Skin.', bg: '#F5ECDD', cat: 'vip',  image: 'assets/produits/vip-skin-green-cream.jpg', banner: 'assets/banners/banner-1.png', bannerAlt: 'Femme tenant la Green Cream VIP Skin Equilibrium' },
+    { badge: 'AWA',                    badgeColor: '#72C6C7', title: 'Peaux grasses et obstruées : retrouvez l’équilibre', sub: 'Complexe équilibrant, mousse purifiante et gel matifiant teinté SPF 50+ pour une peau nette et matifiée.', bg: 'linear-gradient(135deg, #EDF3F6 0%, #DDE8EE 100%)', cat: 'awa', image: 'assets/produits/awa-mousse-purifiante.jpg' },
+    { badge: 'MS — IDP Medical Skin',  badgeColor: '#72C6C7', title: 'Les soins dermatologiques de la peau', sub: 'Lotion atopic, protection solaire familiale, nettoyant purifiant et shampooings pour le cuir chevelu.', bg: 'linear-gradient(135deg, #ECEFF4 0%, #DEE3EC 100%)', cat: 'ms',  image: 'assets/produits/ms-atopic-lotion.jpg' }
+  ];
+
+  var state = { slide: 0, category: 'tous', type: 'tous', query: '' };
+  var heroTimer = null;
+
+  // Filtre de gamme venant d'une autre page (?cat=ms)
+  var qp = new URLSearchParams(location.search);
+  if (qp.get('cat') && catByKey(qp.get('cat'))) state.category = qp.get('cat');
+
+  function countIn(key) { return PRODUCTS.filter(function (p) { return p.category === key; }).length; }
+  function plural(n, word) { return n + ' ' + word + (n > 1 ? 's' : ''); }
+
+  /* ---------- Hero ---------- */
+  var HERO_DELAY = 6000, heroLock = false, heroPaused = false;
+  function buildHero() {
+    var track = document.getElementById('hero-track');
+    track.innerHTML = HERO_SLIDES.map(function (s, i) {
+      var bannerHtml = s.banner ? '<img class="hero-bg" src="' + s.banner + '" alt="' + escapeHtml(s.bannerAlt || s.badge) + '"' + (i ? ' loading="lazy"' : ' fetchpriority="high"') + '><div class="hero-veil"></div>' : '';
+      var artHtml = s.banner ? '' : '<div class="hero-art"><img src="' + s.image + '" alt="' + escapeHtml(s.badge) + '"' + (i ? ' loading="lazy"' : '') + '></div>';
+      return '<div class="hero-slide' + (s.banner ? ' has-banner' : '') + '" style="background:' + s.bg + ';" role="group" aria-roledescription="diapositive" aria-label="' + (i + 1) + ' sur ' + HERO_SLIDES.length + '">' +
+        bannerHtml +
+        '<div class="hero-inner"><div class="hero-content">' +
+          '<span class="hero-badge anim" style="--i:0;color:' + s.badgeColor + ';">' + escapeHtml(s.badge) + '</span>' +
+          '<h1 class="hero-title anim" style="--i:1;">' + escapeHtml(s.title) + '</h1>' +
+          '<p class="hero-sub anim" style="--i:2;">' + escapeHtml(s.sub) + '</p>' +
+          '<div class="hero-actions"><a href="#produits" class="btn-primary anim" style="--i:3;">Découvrir la gamme</a><a href="#categories" class="link-underline anim" style="--i:4;">Voir les catégories</a></div>' +
+        '</div></div>' +
+        artHtml +
+      '</div>';
+    }).join('');
+    var dotsEl = document.getElementById('hero-dots');
+    dotsEl.innerHTML = '';
+    HERO_SLIDES.forEach(function (slide, i) {
+      var btn = document.createElement('button');
+      btn.className = 'dot';
+      btn.setAttribute('aria-label', 'Aller à la diapositive ' + (i + 1));
+      btn.innerHTML = '<i></i>';
+      btn.style.setProperty('--dur', HERO_DELAY + 'ms');
+      btn.addEventListener('click', function () { goToSlide(i); });
+      dotsEl.appendChild(btn);
+    });
+    document.getElementById('hero-prev').addEventListener('click', function () { goToSlide((state.slide - 1 + HERO_SLIDES.length) % HERO_SLIDES.length); });
+    document.getElementById('hero-next').addEventListener('click', function () { goToSlide((state.slide + 1) % HERO_SLIDES.length); });
+    var hero = document.getElementById('hero');
+    hero.addEventListener('mouseenter', function () { heroPaused = true; hero.classList.add('paused'); clearHeroTimer(); });
+    hero.addEventListener('mouseleave', function () { heroPaused = false; hero.classList.remove('paused'); renderHero(true); });
+    // balayage tactile
+    var x0 = null;
+    hero.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    hero.addEventListener('touchend', function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 50) goToSlide((state.slide + (dx < 0 ? 1 : -1) + HERO_SLIDES.length) % HERO_SLIDES.length);
+    }, { passive: true });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) clearHeroTimer(); else renderHero(true); });
+  }
+  // restart = true : on relance seulement la barre de progression et le minuteur (sans rejouer le défilement)
+  function renderHero(restart) {
+    var slides = document.querySelectorAll('.hero-slide');
+    var dots = document.querySelectorAll('#hero-dots .dot');
+    document.getElementById('hero-track').style.transform = 'translateX(' + (-state.slide * 100) + '%)';
+    slides.forEach(function (el, i) {
+      var on = i === state.slide;
+      if (!restart) {
+        if (on) el.classList.add('active');
+        else { if (el.classList.contains('active')) { el.classList.add('leaving'); (function (n) { setTimeout(function () { n.classList.remove('leaving'); }, 1100); })(el); } el.classList.remove('active'); }
+      }
+      el.setAttribute('aria-hidden', on ? 'false' : 'true');
+    });
+    dots.forEach(function (d, i) {
+      d.classList.remove('active');
+      if (i === state.slide) { void d.offsetWidth; d.classList.add('active'); }
+    });
+    resetHeroTimer();
+  }
+  function goToSlide(i) { if (i === state.slide) return; state.slide = i; renderHero(); }
+  function clearHeroTimer() { if (heroTimer) { clearTimeout(heroTimer); heroTimer = null; } }
+  function resetHeroTimer() {
+    clearHeroTimer();
+    if (heroPaused || document.hidden) return;
+    heroTimer = setTimeout(function () { state.slide = (state.slide + 1) % HERO_SLIDES.length; renderHero(); }, HERO_DELAY);
+  }
+
+  /* ---------- Gammes (cartes) ---------- */
+  function renderCategories() {
+    var grid = document.getElementById('cat-grid');
+    grid.style.gridTemplateColumns = 'repeat(' + Math.min(CATEGORIES.length, 3) + ', minmax(0, 1fr))';
+    grid.innerHTML = CATEGORIES.map(function (c) {
+      return '<a href="#produits" class="cat-card" data-cat="' + c.key + '" style="background:' + c.bg + ';">' +
+        '<img src="' + c.image + '" alt="" loading="lazy">' +
+        '<div style="margin-top:auto; position:relative; z-index:1;">' +
+          '<div class="name">' + escapeHtml(c.label) + '</div>' +
+          '<div class="desc" style="color:' + c.color + ';">' + escapeHtml(c.desc) + '</div>' +
+          '<div class="count" style="color:' + c.color + ';">' + plural(countIn(c.key), 'produit') + '</div>' +
+        '</div>' +
+      '</a>';
+    }).join('');
+    grid.querySelectorAll('.cat-card').forEach(function (card) {
+      card.addEventListener('click', function (e) {
+        e.preventDefault();
+        state.category = card.getAttribute('data-cat');
+        renderPills(); renderGrid();
+        document.getElementById('produits').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+    document.getElementById('footer-cats').innerHTML = CATEGORIES.map(function (c) {
+      return '<a href="#produits" data-cat="' + c.key + '">' + escapeHtml(c.short) + '</a>';
+    }).join('');
+    document.querySelectorAll('#footer-cats a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        state.category = a.getAttribute('data-cat');
+        renderPills(); renderGrid();
+      });
+    });
+  }
+
+  /* ---------- Filtres ---------- */
+  function renderTypeSelect() {
+    var sel = document.getElementById('type-select');
+    Object.keys(TYPE_LABELS).forEach(function (k) {
+      var o = document.createElement('option');
+      o.value = k; o.textContent = TYPE_LABELS[k];
+      sel.appendChild(o);
+    });
+  }
+  function renderPills() {
+    var el = document.getElementById('pills');
+    el.innerHTML = '';
+    var defs = [{ key: 'tous', label: 'Tous les produits' }].concat(CATEGORIES.map(function (c) { return { key: c.key, label: c.short }; }));
+    defs.forEach(function (p) {
+      var btn = document.createElement('button');
+      btn.className = 'pill' + (state.category === p.key ? ' active' : '');
+      btn.textContent = p.label;
+      btn.addEventListener('click', function () { state.category = p.key; renderPills(); renderGrid(); });
+      el.appendChild(btn);
+    });
+  }
+
+  /* ---------- Grille produits ---------- */
+  function renderGrid() {
+    var q = state.query.trim().toLowerCase();
+    var filtered = PRODUCTS.filter(function (p) {
+      var okCat = state.category === 'tous' || p.category === state.category;
+      var okType = state.type === 'tous' || p.types.indexOf(state.type) !== -1;
+      var okQuery = q === '' || (p.name + ' ' + p.sub).toLowerCase().indexOf(q) !== -1;
+      return okCat && okType && okQuery;
+    });
+
+    document.getElementById('results-count').textContent = plural(filtered.length, 'produit') + ' affiché' + (filtered.length > 1 ? 's' : '');
+
+    var grid = document.getElementById('product-grid');
+    var empty = document.getElementById('empty-state');
+    if (filtered.length === 0) { grid.style.display = 'none'; empty.style.display = 'block'; return; }
+    grid.style.display = 'grid';
+    empty.style.display = 'none';
+
+    grid.innerHTML = filtered.map(function (p) {
+      var cat = catByKey(p.category);
+      var href = 'producto.html?p=' + p.slug;
+      return '' +
+        '<div class="card">' +
+          '<a class="thumb" href="' + href + '">' +
+            '<span class="cat-tag">' + escapeHtml(cat ? cat.short : '') + '</span>' +
+            '<img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" loading="lazy">' +
+          '</a>' +
+          '<div class="body">' +
+            '<span class="type">' + escapeHtml(TYPE_LABELS[p.types[0]]) + '</span>' +
+            '<a class="name" href="' + href + '">' + escapeHtml(p.name) + '</a>' +
+            '<div class="sub">' + escapeHtml(p.sub) + '</div>' +
+            '<div class="size">' + escapeHtml(p.size) + '</div>' +
+            '<div class="row">' +
+              '<span class="price' + (p.price === null ? ' tbd' : '') + '">' + V.fmtPrice(p) + '</span>' +
+              '<button class="add-btn" data-add="' + p.id + '" aria-label="Ajouter ' + escapeHtml(p.name) + ' au panier"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+    grid.querySelectorAll('[data-add]').forEach(function (b) {
+      b.addEventListener('click', function () { V.addToCart(parseInt(b.getAttribute('data-add'), 10), 1); });
+    });
+  }
+
+  document.getElementById('search-input').addEventListener('input', function (e) { state.query = e.target.value; renderGrid(); });
+  document.getElementById('type-select').addEventListener('change', function (e) { state.type = e.target.value; renderGrid(); });
+
+  renderTypeSelect();
+  renderCategories();
+  buildHero();
+  renderHero();
+  renderPills();
+  renderGrid();
+  V.updateBadge();
+})();
+
+</script>
+
+</body>
+</html>
