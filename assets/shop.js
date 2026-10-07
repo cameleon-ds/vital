@@ -358,6 +358,57 @@
       b.title = u ? 'Bonjour ' + u.firstName : 'Se connecter';
     });
   }
+  /* ================= Menu burger (tablette et mobile) ================= */
+  var mmPanel, mmOverlay;
+  function mmClose() {
+    if (!mmPanel) return;
+    mmPanel.classList.remove('open'); mmOverlay.classList.remove('open');
+    document.body.classList.remove('mm-lock');
+    document.querySelectorAll('header .burger').forEach(function (b) { b.classList.remove('open'); b.setAttribute('aria-expanded', 'false'); });
+  }
+  function mmOpen(header) {
+    var u = V.currentUser();
+    var links = '';
+    header.querySelectorAll('nav.main-nav a').forEach(function (a, i) {
+      links += '<a class="mm-link' + (a.classList.contains('active') ? ' active' : '') + '" style="--i:' + i + ';" href="' + a.getAttribute('href') + '">' + a.textContent + '</a>';
+    });
+    mmPanel.innerHTML =
+      '<nav class="mm-links" aria-label="Menu principal">' + links + '</nav>' +
+      '<div class="mm-account">' +
+        '<div class="mm-head">' + (u ? 'Bonjour ' + esc(u.firstName) : 'Mon espace') + '</div>' +
+        '<a class="mm-link sm" href="compte.html#commandes">Mes commandes</a>' +
+        '<a class="btn-primary mm-cta" href="' + (u ? 'compte.html#tableau-de-bord' : 'compte.html#connexion') + '">' + ICON.user + (u ? 'Mon compte' : 'Se connecter') + '</a>' +
+      '</div>';
+    mmPanel.style.setProperty('--mm-top', Math.max(0, Math.round(header.getBoundingClientRect().bottom)) + 'px');
+    mmOverlay.style.setProperty('--mm-top', Math.max(0, Math.round(header.getBoundingClientRect().bottom)) + 'px');
+    mmPanel.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', mmClose); });
+    void mmPanel.offsetWidth;
+    mmPanel.classList.add('open'); mmOverlay.classList.add('open');
+    document.body.classList.add('mm-lock');
+    header.querySelectorAll('.burger').forEach(function (b) { b.classList.add('open'); b.setAttribute('aria-expanded', 'true'); });
+  }
+  function initBurger() {
+    var header = document.querySelector('header:not(.s-min)');
+    if (!header || header.__burger) return;
+    var wrap = header.querySelector('.wrap'), nav = header.querySelector('nav.main-nav');
+    if (!wrap || !nav) return;
+    header.__burger = true;
+    if (!mmPanel) {
+      mmOverlay = document.createElement('div'); mmOverlay.className = 'mm-overlay';
+      mmPanel = document.createElement('aside'); mmPanel.className = 'mm-panel'; mmPanel.id = 'mobile-menu';
+      document.body.appendChild(mmOverlay); document.body.appendChild(mmPanel);
+      mmOverlay.addEventListener('click', mmClose);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') mmClose(); });
+      window.addEventListener('resize', function () { if (window.innerWidth > 1024) mmClose(); });
+    }
+    var btn = document.createElement('button');
+    btn.className = 'burger'; btn.type = 'button';
+    btn.setAttribute('aria-label', 'Menu'); btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', 'mobile-menu');
+    btn.innerHTML = '<span></span><span></span><span></span>';
+    btn.addEventListener('click', function () { if (btn.classList.contains('open')) mmClose(); else mmOpen(header); });
+    wrap.insertBefore(btn, wrap.firstChild);
+  }
+
   function bindHeader() {
     document.querySelectorAll('.header-icons button').forEach(function (b) {
       if (b.__vbound) return; b.__vbound = true;
@@ -372,7 +423,7 @@
         }
       });
     });
-    V.updateBadge(); markUser();
+    V.updateBadge(); markUser(); initBurger();
   }
 
   /* ================= Tiroir panier ================= */
