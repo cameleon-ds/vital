@@ -42,26 +42,59 @@
   .header-icons button { background: none; border: none; padding: 4px; color: var(--ink); display: flex; position: relative; }
   .cart-badge { position: absolute; top: -6px; right: -8px; background: var(--purple); color: #fff; font-size: 10px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-  /* Hero */
-  .hero-section { padding: 32px 40px 0; max-width: 1280px; margin: 0 auto; }
-  .hero { position: relative; border-radius: 20px; overflow: hidden; min-height: 420px; display: flex; align-items: center; padding: 48px 64px; transition: background 0.4s ease; }
-  .hero-content { max-width: 480px; display: flex; flex-direction: column; gap: 18px; position: relative; z-index: 2; }
+  /* Hero — pleine largeur, défilement latéral, textes animés en cascade */
+  .hero-section { padding: 0; margin: 0; width: 100%; }
+  .hero { position: relative; width: 100%; overflow: hidden; height: clamp(460px, 62vh, 620px); }
+  .hero-track { display: flex; height: 100%; width: 100%; transition: transform 1s cubic-bezier(.77, 0, .18, 1); will-change: transform; }
+  .hero-slide { position: relative; flex: 0 0 100%; width: 100%; height: 100%; display: flex; align-items: center; overflow: hidden; }
+  .hero-inner { position: relative; z-index: 2; width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+  .hero-content { max-width: 520px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
   .hero-badge { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-  .hero-title { margin: 0; font-size: 42px; line-height: 1.15; font-weight: 800; color: var(--ink-strong); }
-  .hero-sub { margin: 0; font-size: 16px; line-height: 1.6; color: #565C64; max-width: 420px; }
+  .hero-title { margin: 0; font-size: 48px; line-height: 1.12; font-weight: 800; color: var(--ink-strong); }
+  .hero-sub { margin: 0; font-size: 16px; line-height: 1.6; color: #565C64; max-width: 440px; }
   .hero-actions { display: flex; gap: 14px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
   .btn-primary { background: var(--ink); color: #fff; padding: 14px 28px; border-radius: 999px; font-size: 14px; font-weight: 700; border: none; display: inline-block; }
   .btn-primary:hover { background: #3A3F47; }
   .link-underline { font-size: 14px; font-weight: 700; color: var(--ink-strong); border-bottom: 2px solid var(--ink-strong); padding-bottom: 2px; }
-  .hero-art { position: absolute; right: 56px; top: 50%; margin-top: -170px; width: 340px; height: 340px; display: flex; align-items: center; justify-content: center; }
+  .hero-art { position: absolute; right: max(40px, calc((100% - 1200px) / 2)); top: 50%; margin-top: -200px; width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; }
   .hero-art img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
-  .hero-dots { position: absolute; bottom: 26px; left: 64px; display: flex; gap: 8px; z-index: 2; }
-  .dot { height: 8px; border-radius: 999px; border: none; padding: 0; cursor: pointer; transition: all 0.2s ease; background: #D8D3DA; width: 8px; }
-  .dot.active { background: var(--purple); width: 26px; }
+
+  /* Entrée en cascade : badge → titre → texte → boutons (le produit arrive de la droite) */
+  .hero-slide.active .anim { animation: heroUp .9s cubic-bezier(.22, 1, .36, 1) backwards; animation-delay: calc(.45s + var(--i, 0) * .16s); }
+  .hero-slide.active .hero-art img { animation: heroArt 1.2s cubic-bezier(.22, 1, .36, 1) .35s backwards; }
+  @keyframes heroUp { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
+  @keyframes heroArt { from { opacity: 0; transform: translateX(90px) scale(.92); } to { opacity: 1; transform: none; } }
+  .hero-badge.anim { position: relative; padding-left: 0; }
+  .hero-slide.active .hero-badge::after { content: ''; display: block; height: 2px; background: currentColor; margin-top: 8px; animation: heroLine 1s cubic-bezier(.22, 1, .36, 1) .9s backwards; width: 44px; transform-origin: left; }
+  @keyframes heroLine { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* Contrôles */
+  .hero-dots { position: absolute; bottom: 28px; left: 0; right: 0; z-index: 3; max-width: 1280px; margin: 0 auto; padding: 0 40px; display: flex; gap: 8px; align-items: center; pointer-events: none; }
+  .hero-dots .dot { pointer-events: auto; }
+  .dot { position: relative; height: 4px; border-radius: 0; border: none; padding: 0; cursor: pointer; transition: width .5s cubic-bezier(.22, 1, .36, 1), background .3s ease; background: rgba(54, 59, 66, .22); width: 28px; overflow: hidden; }
+  .dot.active { background: rgba(54, 59, 66, .22); width: 64px; }
+  .dot i { position: absolute; inset: 0; background: var(--purple); transform: scaleX(0); transform-origin: left; }
+  .dot.active i { animation: heroProgress var(--dur, 6s) linear forwards; }
+  .hero.paused .dot.active i { animation-play-state: paused; }
+  @keyframes heroProgress { to { transform: scaleX(1); } }
+  .hero-arrow { position: absolute; top: 50%; margin-top: -24px; width: 48px; height: 48px; z-index: 3; background: rgba(255, 255, 255, .85); border: 1px solid var(--border); color: var(--ink-strong); display: flex; align-items: center; justify-content: center; padding: 0; opacity: 0; transition: opacity .3s ease, background .3s ease, transform .3s ease; }
+  .hero:hover .hero-arrow { opacity: 1; }
+  .hero-arrow:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
+  .hero-arrow.prev { left: 24px; }
+  .hero-arrow.next { right: 24px; }
+  @media (max-width: 1100px) { .hero-art { width: 320px; height: 320px; margin-top: -160px; } .hero-title { font-size: 40px; } }
   @media (max-width: 720px) {
-    .hero { padding: 40px 28px; min-height: 460px; }
+    .hero { height: auto; min-height: 480px; }
+    .hero-track { height: auto; }
+    .hero-slide { min-height: 480px; }
+    .hero-inner, .hero-dots { padding: 0 20px; }
     .hero-art { display: none; }
-    .hero-title { font-size: 30px; }
+    .hero-title { font-size: 32px; }
+    .hero-arrow { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-track { transition-duration: .01s; }
+    .hero-slide.active .anim, .hero-slide.active .hero-art img, .hero-slide.active .hero-badge::after { animation: none; }
   }
 
   /* Value props */
@@ -173,18 +206,11 @@
 
 <main id="top">
 
-  <section class="hero-section">
+  <section class="hero-section" aria-roledescription="carrousel" aria-label="À la une">
     <div class="hero" id="hero">
-      <div class="hero-content">
-        <span class="hero-badge" id="hero-badge"></span>
-        <h1 class="hero-title" id="hero-title"></h1>
-        <p class="hero-sub" id="hero-sub"></p>
-        <div class="hero-actions">
-          <a href="#produits" class="btn-primary">Découvrir la gamme</a>
-          <a href="#categories" class="link-underline">Voir les catégories</a>
-        </div>
-      </div>
-      <div class="hero-art"><img id="hero-img" src="" alt=""></div>
+      <div class="hero-track" id="hero-track"></div>
+      <button class="hero-arrow prev" id="hero-prev" aria-label="Diapositive précédente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+      <button class="hero-arrow next" id="hero-next" aria-label="Diapositive suivante"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
       <div class="hero-dots" id="hero-dots"></div>
     </div>
   </section>
@@ -308,35 +334,71 @@
   function plural(n, word) { return n + ' ' + word + (n > 1 ? 's' : ''); }
 
   /* ---------- Hero ---------- */
-  function renderHero() {
-    var s = HERO_SLIDES[state.slide];
-    document.getElementById('hero').style.background = s.bg;
-    var badge = document.getElementById('hero-badge');
-    badge.textContent = s.badge;
-    badge.style.color = s.badgeColor;
-    document.getElementById('hero-title').textContent = s.title;
-    document.getElementById('hero-sub').textContent = s.sub;
-    var img = document.getElementById('hero-img');
-    img.src = s.image;
-    img.alt = s.badge;
-
+  var HERO_DELAY = 6000, heroLock = false, heroPaused = false;
+  function buildHero() {
+    var track = document.getElementById('hero-track');
+    track.innerHTML = HERO_SLIDES.map(function (s, i) {
+      return '<div class="hero-slide" style="background:' + s.bg + ';" role="group" aria-roledescription="diapositive" aria-label="' + (i + 1) + ' sur ' + HERO_SLIDES.length + '">' +
+        '<div class="hero-inner"><div class="hero-content">' +
+          '<span class="hero-badge anim" style="--i:0;color:' + s.badgeColor + ';">' + escapeHtml(s.badge) + '</span>' +
+          '<h1 class="hero-title anim" style="--i:1;">' + escapeHtml(s.title) + '</h1>' +
+          '<p class="hero-sub anim" style="--i:2;">' + escapeHtml(s.sub) + '</p>' +
+          '<div class="hero-actions"><a href="#produits" class="btn-primary anim" style="--i:3;">Découvrir la gamme</a><a href="#categories" class="link-underline anim" style="--i:4;">Voir les catégories</a></div>' +
+        '</div></div>' +
+        '<div class="hero-art"><img src="' + s.image + '" alt="' + escapeHtml(s.badge) + '"' + (i ? ' loading="lazy"' : '') + '></div>' +
+      '</div>';
+    }).join('');
     var dotsEl = document.getElementById('hero-dots');
     dotsEl.innerHTML = '';
     HERO_SLIDES.forEach(function (slide, i) {
       var btn = document.createElement('button');
-      btn.className = 'dot' + (i === state.slide ? ' active' : '');
+      btn.className = 'dot';
       btn.setAttribute('aria-label', 'Aller à la diapositive ' + (i + 1));
+      btn.innerHTML = '<i></i>';
+      btn.style.setProperty('--dur', HERO_DELAY + 'ms');
       btn.addEventListener('click', function () { goToSlide(i); });
       dotsEl.appendChild(btn);
     });
+    document.getElementById('hero-prev').addEventListener('click', function () { goToSlide((state.slide - 1 + HERO_SLIDES.length) % HERO_SLIDES.length); });
+    document.getElementById('hero-next').addEventListener('click', function () { goToSlide((state.slide + 1) % HERO_SLIDES.length); });
+    var hero = document.getElementById('hero');
+    hero.addEventListener('mouseenter', function () { heroPaused = true; hero.classList.add('paused'); clearHeroTimer(); });
+    hero.addEventListener('mouseleave', function () { heroPaused = false; hero.classList.remove('paused'); renderHero(true); });
+    // balayage tactile
+    var x0 = null;
+    hero.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    hero.addEventListener('touchend', function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 50) goToSlide((state.slide + (dx < 0 ? 1 : -1) + HERO_SLIDES.length) % HERO_SLIDES.length);
+    }, { passive: true });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) clearHeroTimer(); else renderHero(true); });
   }
-  function goToSlide(i) { state.slide = i; renderHero(); resetHeroTimer(); }
+  // restart = true : on relance seulement la barre de progression et le minuteur (sans rejouer le défilement)
+  function renderHero(restart) {
+    var slides = document.querySelectorAll('.hero-slide');
+    var dots = document.querySelectorAll('#hero-dots .dot');
+    document.getElementById('hero-track').style.transform = 'translateX(' + (-state.slide * 100) + '%)';
+    slides.forEach(function (el, i) {
+      var on = i === state.slide;
+      if (!restart) {
+        if (on) el.classList.add('active');
+        else { if (el.classList.contains('active')) { el.classList.add('leaving'); (function (n) { setTimeout(function () { n.classList.remove('leaving'); }, 1100); })(el); } el.classList.remove('active'); }
+      }
+      el.setAttribute('aria-hidden', on ? 'false' : 'true');
+    });
+    dots.forEach(function (d, i) {
+      d.classList.remove('active');
+      if (i === state.slide) { void d.offsetWidth; d.classList.add('active'); }
+    });
+    resetHeroTimer();
+  }
+  function goToSlide(i) { if (i === state.slide) return; state.slide = i; renderHero(); }
+  function clearHeroTimer() { if (heroTimer) { clearTimeout(heroTimer); heroTimer = null; } }
   function resetHeroTimer() {
-    if (heroTimer) clearInterval(heroTimer);
-    heroTimer = setInterval(function () {
-      state.slide = (state.slide + 1) % HERO_SLIDES.length;
-      renderHero();
-    }, 6000);
+    clearHeroTimer();
+    if (heroPaused || document.hidden) return;
+    heroTimer = setTimeout(function () { state.slide = (state.slide + 1) % HERO_SLIDES.length; renderHero(); }, HERO_DELAY);
   }
 
   /* ---------- Gammes (cartes) ---------- */
@@ -443,8 +505,8 @@
 
   renderTypeSelect();
   renderCategories();
+  buildHero();
   renderHero();
-  resetHeroTimer();
   renderPills();
   renderGrid();
   V.updateBadge();
