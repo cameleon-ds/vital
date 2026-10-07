@@ -184,6 +184,33 @@
   .newsletter-form button { background: var(--purple); color: #fff; border: none; padding: 14px 24px; border-radius: 10px; font-size: 14px; font-weight: 700; white-space: nowrap; }
   .newsletter-form button:hover { opacity: 0.92; }
 
+  /* Bannière promotionnelle fixe (MS Atopic Lotion) */
+  .promo { position: relative; width: 100%; margin-top: 64px; overflow: hidden; background: #D4C3E2; min-height: clamp(420px, 42vw, 620px); display: flex; align-items: center; }
+  .promo-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: left center; transform: scale(1.06); transition: transform 1.8s cubic-bezier(.22, 1, .36, 1); }
+  .promo.in .promo-bg { transform: none; }
+  .promo-inner { position: relative; z-index: 1; width: 100%; max-width: 1280px; margin: 0 auto; padding: 56px 40px; }
+  .promo-content { margin-left: auto; width: min(46%, 540px); display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+  .promo-badge { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-strong); }
+  .promo-badge::after { content: ''; display: block; width: 44px; height: 2px; background: var(--cta); margin-top: 8px; transform-origin: left; }
+  .promo-title { margin: 0; font-size: 40px; line-height: 1.14; font-weight: 800; color: var(--ink-strong); }
+  .promo-sub { margin: 0; font-size: 16px; line-height: 1.6; color: #4A4358; max-width: 480px; }
+  .promo-points { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .promo-points li { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--ink-strong); }
+  .promo-points svg { flex-shrink: 0; }
+  .promo-actions { margin-top: 8px; }
+  .promo:not(.in) .anim { opacity: 0; }
+  .promo.in .anim { animation: heroUp .9s cubic-bezier(.22, 1, .36, 1) backwards; animation-delay: calc(.2s + var(--i, 0) * .14s); }
+  .promo.in .promo-badge::after { animation: heroLine 1s cubic-bezier(.22, 1, .36, 1) .6s backwards; }
+  @media (max-width: 1100px) { .promo-title { font-size: 34px; } .promo-content { width: min(50%, 480px); } }
+  @media (max-width: 820px) {
+    .promo { display: block; margin-top: 48px; background: #E4D9F0; min-height: 0; }
+    .promo-bg { position: relative; inset: auto; display: block; height: 300px; object-position: 8% center; }
+    .promo-inner { padding: 28px 20px 36px; }
+    .promo-content { width: 100%; }
+    .promo-title { font-size: 28px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .promo-bg { transition: none; transform: none; } .promo.in .anim, .promo.in .promo-badge::after { animation: none; } }
+
   /* Footer */
   footer { margin-top: 72px; background: #fff; border-top: 1px solid #ECEAEC; }
   .footer-grid { max-width: 1280px; margin: 0 auto; padding: 56px 40px 28px; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; }
@@ -279,6 +306,23 @@
 
     <div class="grid" id="product-grid"></div>
     <div class="empty-state" id="empty-state" style="display:none;">Aucun produit ne correspond à votre recherche.</div>
+  </section>
+
+  <section class="promo" id="promo-ms" aria-label="MS Atopic Lotion">
+    <img class="promo-bg" src="assets/banners/banner-add-1.png" alt="MS Atopic Lotion : coffret et flacon pompe de 400 ml, avec de la lavande" loading="lazy">
+    <div class="promo-inner">
+      <div class="promo-content">
+        <span class="promo-badge anim" style="--i:0;">MS Atopic Lotion</span>
+        <h2 class="promo-title anim" style="--i:1;">Apaisez la peau atopique, jour après jour</h2>
+        <p class="promo-sub anim" style="--i:2;">Une émulsion fluide qui hydrate, élimine la rugosité et la sécheresse, et atténue les démangeaisons et les sensations de brûlure.</p>
+        <ul class="promo-points anim" style="--i:3;">
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Acide glycyrrhétinique et huile de babassu</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Film blanc visible pour une application sans lacunes</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#72C6C7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Testé dermatologiquement</li>
+        </ul>
+        <div class="promo-actions anim" style="--i:4;"><a href="producto.html?p=ms-atopic-lotion" class="btn-primary">Découvrir MS Atopic Lotion</a></div>
+      </div>
+    </div>
   </section>
 
   <section class="newsletter-section" id="apropos">
@@ -525,6 +569,13 @@
   document.getElementById('search-input').addEventListener('input', function (e) { state.query = e.target.value; renderGrid(); });
   document.getElementById('type-select').addEventListener('change', function (e) { state.type = e.target.value; renderGrid(); });
 
+  (function () {
+    var promo = document.getElementById('promo-ms');
+    if (!promo) return;
+    if (!('IntersectionObserver' in window)) { promo.classList.add('in'); return; }
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { promo.classList.add('in'); io.disconnect(); } }); }, { threshold: 0.25 });
+    io.observe(promo);
+  })();
   renderTypeSelect();
   renderCategories();
   buildHero();
