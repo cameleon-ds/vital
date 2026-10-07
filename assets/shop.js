@@ -11,12 +11,11 @@
     currency: '€',
     freeShippingThreshold: 50,           // [à confirmer avec le client]
     shipping: {
-      standard: { key: 'standard', label: 'Livraison standard', eta: '2 à 4 jours ouvrés partout en Tunisie', price: 5 },
-      express:  { key: 'express',  label: 'Livraison express',  eta: 'Sous 24 h — Grand Tunis', price: 9 },
+      standard: { key: 'standard', label: 'Livraison standard', eta: '2 à 4 jours ouvrés partout en France', price: 5 },
+      express:  { key: 'express',  label: 'Livraison express',  eta: 'Sous 24 à 48 h — France métropolitaine', price: 9 },
       pickup:   { key: 'pickup',   label: 'Retrait en pharmacie partenaire', eta: 'Disponible sous 24 h', price: 0 }
     },
     promos: { VITAL10: { percent: 10, label: '−10 %' } },
-    governorates: ['Ariana', 'Béja', 'Ben Arous', 'Bizerte', 'Gabès', 'Gafsa', 'Jendouba', 'Kairouan', 'Kasserine', 'Kébili', 'Le Kef', 'Mahdia', 'La Manouba', 'Médenine', 'Monastir', 'Nabeul', 'Sfax', 'Sidi Bouzid', 'Siliana', 'Sousse', 'Tataouine', 'Tozeur', 'Tunis', 'Zaghouan'],
     statuses: {
       preparation: 'En préparation',
       expediee: 'Expédiée',
@@ -41,9 +40,9 @@
     try { return new Intl.DateTimeFormat('fr-FR', opts).format(d); } catch (e) { return d.toLocaleDateString(); }
   }
   function isEmail(s) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(s).trim()); }
-  function cleanPhone(s) { return String(s).replace(/[\s.\-()]/g, '').replace(/^(\+216|00216)/, ''); }
-  function isPhone(s) { return /^[2-579]\d{7}$/.test(cleanPhone(s)); }   // numéros tunisiens à 8 chiffres
-  function fmtPhone(s) { var p = cleanPhone(s); return /^\d{8}$/.test(p) ? '+216 ' + p.slice(0, 2) + ' ' + p.slice(2, 5) + ' ' + p.slice(5) : s; }
+  function cleanPhone(s) { return String(s).replace(/[\s.\-()]/g, '').replace(/^(\+33|0033)/, '0'); }
+  function isPhone(s) { return /^0[1-9]\d{8}$/.test(cleanPhone(s)); }   // numéros français à 10 chiffres
+  function fmtPhone(s) { var p = cleanPhone(s); return /^\d{10}$/.test(p) ? p.replace(/(\d{2})(?=\d)/g, '$1 ') : s; }
   function luhn(num) {
     var s = String(num).replace(/\D/g, ''), sum = 0, alt = false;
     if (s.length < 13) return false;
@@ -271,21 +270,21 @@
 
   /* Compte de démonstration (3 commandes d'exemple) */
   V.seedDemo = function () {
-    var email = 'demo@vital.tn';
+    var email = 'demo@vital.fr';
     var done = function () { write('vital_session', { email: email }); emitAuth(); return { ok: true }; };
     if (findUser(email)) return Promise.resolve(done());
     var salt = randomSalt();
     return hashPw('Demo1234', salt).then(function (hash) {
-      var addr = { id: 'a-demo1', label: 'Domicile', firstName: 'Amel', lastName: 'Ben Salah', phone: '22 123 456', address: '12 rue des Jasmins', complement: 'Résidence Les Pins, appt 4', city: 'La Marsa', governorate: 'Tunis', zip: '2078', isDefault: true };
+      var addr = { id: 'a-demo1', label: 'Domicile', firstName: 'Camille', lastName: 'Martin', phone: '06 12 34 56 78', address: '12 rue des Lilas', complement: 'Bâtiment B, appt 4', city: 'Lyon', zip: '69003', isDefault: true };
       var users = getUsers();
-      users.push({ email: email, firstName: 'Amel', lastName: 'Ben Salah', phone: '22 123 456', newsletter: true, addresses: [addr], salt: salt, hash: hash, createdAt: new Date(Date.now() - 90 * 864e5).toISOString() });
+      users.push({ email: email, firstName: 'Camille', lastName: 'Martin', phone: '06 12 34 56 78', newsletter: true, addresses: [addr], salt: salt, hash: hash, createdAt: new Date(Date.now() - 90 * 864e5).toISOString() });
       saveUsers(users);
       var mk = function (id, daysAgo, status, items, shipKey, payKey) {
         var lines = items.map(function (it) { var p = V.productBySlug(it[0]); return { id: p.id, slug: p.slug, name: p.name, size: p.size, image: p.image, price: p.price, qty: it[1] }; });
         var sub = lines.reduce(function (s, l) { return s + l.price * l.qty; }, 0);
         var ship = shipKey === 'standard' ? (sub >= CONFIG.freeShippingThreshold ? 0 : 5) : CONFIG.shipping[shipKey].price;
         return { id: id, date: new Date(Date.now() - daysAgo * 864e5).toISOString(), status: status, email: email,
-          contact: { firstName: 'Amel', lastName: 'Ben Salah', email: email, phone: '22 123 456' }, address: addr,
+          contact: { firstName: 'Camille', lastName: 'Martin', email: email, phone: '06 12 34 56 78' }, address: addr,
           delivery: { key: shipKey, label: CONFIG.shipping[shipKey].label, eta: CONFIG.shipping[shipKey].eta, price: ship },
           payment: payKey === 'card' ? { key: 'card', label: 'Carte bancaire •••• 4242', status: 'Payée' } : { key: 'cod', label: 'Paiement à la livraison', status: status === 'livree' ? 'Payée' : 'À payer à la livraison' },
           lines: lines, subtotal: sub, discount: 0, promo: '', shipping: ship, total: sub + ship, note: '' };
@@ -340,7 +339,7 @@
       '<div class="footer-col"><div class="head">Navigation</div><a href="index.html">Accueil</a><a href="index.html#categories">Catégories</a><a href="index.html#produits">Tous les produits</a><a href="index.html#apropos">À propos</a></div>' +
       '<div class="footer-col"><div class="head">Gammes</div>' + cats + '</div>' +
       '<div class="footer-col"><div class="head">Mon espace</div><a href="compte.html#connexion">Mon compte</a><a href="compte.html#commandes">Mes commandes</a><a href="panier.html">Mon panier</a><span>contact@vital.com.tn</span></div>' +
-      '</div><div class="footer-bottom"><span>© 2026 VITAL Laboratoires. Tous droits réservés.</span><span>Paiement sécurisé · Livraison en Tunisie</span></div></footer>';
+      '</div><div class="footer-bottom"><span>© 2026 VITAL Laboratoires. Tous droits réservés.</span><span>Paiement sécurisé · Livraison en France</span></div></footer>';
   }
   V.mountChrome = function (opts) {
     opts = opts || {};
@@ -526,7 +525,7 @@
     });
   };
   V.lineAddress = function (a) {
-    return esc(a.address) + (a.complement ? ', ' + esc(a.complement) : '') + '<br>' + esc(a.zip || '') + ' ' + esc(a.city) + ', ' + esc(a.governorate) + '<br>Tunisie';
+    return esc(a.address) + (a.complement ? ', ' + esc(a.complement) : '') + '<br>' + esc(a.zip || '') + ' ' + esc(a.city) + '<br>France';
   };
 
   /* ================= Initialisation ================= */
