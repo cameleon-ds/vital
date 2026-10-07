@@ -92,6 +92,17 @@
   .hero-arrow.prev { left: 24px; }
   .hero-arrow.next { right: 24px; }
   @media (max-width: 1100px) { .hero-art { width: 320px; height: 320px; margin-top: -160px; } .hero-title, .hero-slide.has-banner .hero-title { font-size: 36px; } .hero-slide.has-banner .hero-content { max-width: 330px; } .hero-veil { background: linear-gradient(90deg, rgba(var(--veil, 247, 240, 229), .85) 0%, rgba(var(--veil, 247, 240, 229), .55) 34%, rgba(var(--veil, 247, 240, 229), 0) 55%); } }
+  /* Tablette + mobile : l'image du slider passe au-dessus du texte et du CTA */
+  @media (max-width: 1024px) {
+    .hero { height: auto; min-height: 0; }
+    .hero-track { height: auto; }
+    .hero-art, .hero-veil, .hero-arrow { display: none; }
+    .hero-slide.has-banner { flex-direction: column; align-items: stretch; justify-content: flex-start; min-height: 0; background: #fff !important; }
+    .hero-slide.has-banner .hero-bg { position: relative; inset: auto; order: 0; width: 100%; height: clamp(300px, 52vw, 460px); flex: 0 0 auto; object-position: var(--pos, 70% 20%); }
+    .hero-slide.has-banner .hero-inner { padding-top: 28px; padding-bottom: 56px; }
+    .hero-slide.has-banner .hero-content { max-width: 100%; }
+    .hero-slide.has-banner .hero-sub { max-width: 560px; }
+  }
   @media (max-width: 720px) {
     .hero { height: auto; min-height: 480px; }
     .hero-track { height: auto; }
@@ -100,9 +111,10 @@
     .hero-art { display: none; }
     .hero-title, .hero-slide.has-banner .hero-title { font-size: 30px; }
     .hero-slide.has-banner { flex-direction: column; align-items: stretch; justify-content: flex-start; min-height: 0; }
-    .hero-slide.has-banner .hero-inner { padding-top: 32px; padding-bottom: 8px; }
+    .hero-slide.has-banner { background: #fff !important; }
+    .hero-slide.has-banner .hero-inner { padding-top: 24px; padding-bottom: 56px; }
     .hero-slide.has-banner .hero-content { max-width: 100%; }
-    .hero-slide.has-banner .hero-bg { position: relative; inset: auto; order: 2; height: 300px; object-position: 80% 30%; flex: 0 0 auto; }
+    .hero-slide.has-banner .hero-bg { position: relative; inset: auto; order: 0; height: 300px; object-position: 80% 30%; flex: 0 0 auto; }
     .hero-veil { display: none; }
     .hero-arrow { display: none; }
   }
@@ -126,7 +138,7 @@
 
   /* Categories */
   .categories { max-width: 1280px; margin: 40px auto 0; padding: 24px 40px 0; }
-  .cat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .cat-grid { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 24px; }
   .cat-card { position: relative; overflow: hidden; border-radius: 16px; padding: 32px 28px; display: flex; flex-direction: column; gap: 14px; min-height: 220px; transition: box-shadow 0.18s ease, transform 0.18s ease; }
   .cat-card img { position: absolute; right: 8px; bottom: 0; height: 200px; width: 200px; object-fit: contain; mix-blend-mode: multiply; }
   .cat-card .desc { font-size: 13px; line-height: 1.5; max-width: 170px; margin-top: 6px; }
@@ -136,7 +148,7 @@
   .cat-card:hover .brand { letter-spacing: 0.08em; }
   .cat-card .brand + .name { margin-top: 4px; }
   .cat-card .count { font-size: 13px; margin-top: 4px; }
-  @media (max-width: 900px) { .cat-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 1024px) { .cat-grid { grid-template-columns: 1fr; } }
 
   /* Filters */
   .products { max-width: 1280px; margin: 56px auto 0; padding: 24px 40px 0; }
@@ -469,7 +481,7 @@
   /* ---------- Gammes (cartes) ---------- */
   function renderCategories() {
     var grid = document.getElementById('cat-grid');
-    grid.style.gridTemplateColumns = 'repeat(' + Math.min(CATEGORIES.length, 3) + ', minmax(0, 1fr))';
+    grid.style.setProperty('--cols', Math.min(CATEGORIES.length, 3));
     grid.innerHTML = CATEGORIES.map(function (c) {
       var parts = c.label.split(' — '), brand = parts[0], rest = parts.slice(1).join(' — ');
       return '<a href="#produits" class="cat-card" data-cat="' + c.key + '" style="background:' + c.bg + ';">' +
