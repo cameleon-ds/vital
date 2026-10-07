@@ -79,12 +79,11 @@
         '<div class="s-form-grid" id="addr-form">' +
           field('firstName', 'Prénom', { auto: 'given-name' }) + field('lastName', 'Nom', { auto: 'family-name' }) +
           field('email', 'Adresse e-mail', { type: 'email', auto: 'email', err: 'Saisissez une adresse e-mail valide', full: true }) +
-          field('phone', 'Téléphone', { type: 'tel', auto: 'tel', ph: '22 123 456', inputmode: 'tel', err: 'Numéro tunisien à 8 chiffres (ex. 22 123 456)', full: true }) +
+          field('phone', 'Téléphone', { type: 'tel', auto: 'tel', ph: '06 12 34 56 78', inputmode: 'tel', err: 'Numéro français à 10 chiffres (ex. 06 12 34 56 78)', full: true }) +
           field('address', 'Adresse', { auto: 'address-line1', ph: 'N°, rue, résidence…', full: true }) +
           field('complement', 'Complément d’adresse', { opt: true, full: true, auto: 'address-line2' }) +
-          field('zip', 'Code postal', { inputmode: 'numeric', max: 4, err: 'Code postal à 4 chiffres', auto: 'postal-code' }) +
+          field('zip', 'Code postal', { inputmode: 'numeric', max: 5, err: 'Code postal à 5 chiffres', auto: 'postal-code' }) +
           field('city', 'Ville', { auto: 'address-level2' }) +
-          field('governorate', 'Gouvernorat', { select: CFG.governorates, full: true }) +
         '</div>' +
         (user ? '<label class="s-check" style="margin-top:16px"><input type="checkbox" id="saveAddr"> Enregistrer cette adresse dans mon compte</label>'
               : '<label class="s-check" style="margin-top:16px"><input type="checkbox" id="mkAccount"> Créer un compte pour suivre mes commandes et commander plus vite</label>' +
@@ -105,7 +104,7 @@
       '<section class="s-card pad s-sec locked" id="sec3"><div class="s-sec-head"><span class="n">3</span><h2>Paiement</h2></div>' +
         '<div class="s-demo" style="margin-bottom:16px">Mode démonstration : aucun paiement réel n’est effectué et aucune donnée de carte n’est enregistrée.</div>' +
         '<div class="s-opts" id="pay-opts">' +
-          '<div class="s-opt sel" data-pay="card"><input type="radio" name="pay" value="card" checked><div class="body"><div class="t">Carte bancaire</div><div class="d">Paiement immédiat et sécurisé</div><div class="s-badges"><span>CIB</span><span>VISA</span><span>MASTERCARD</span></div>' +
+          '<div class="s-opt sel" data-pay="card"><input type="radio" name="pay" value="card" checked><div class="body"><div class="t">Carte bancaire</div><div class="d">Paiement immédiat et sécurisé</div><div class="s-badges"><span>CB</span><span>VISA</span><span>MASTERCARD</span></div>' +
             '<div class="extra"><div class="s-form-grid">' +
               field('cardName', 'Titulaire de la carte', { full: true, auto: 'cc-name' }) +
               field('cardNum', 'Numéro de carte', { full: true, inputmode: 'numeric', ph: '1234 5678 9012 3456', auto: 'cc-number', max: 23, err: 'Numéro de carte invalide' }) +
@@ -113,7 +112,7 @@
               field('cardCvc', 'Cryptogramme', { ph: '123', inputmode: 'numeric', max: 4, auto: 'cc-csc', err: '3 ou 4 chiffres' }) +
             '</div><div class="s-muted" style="margin-top:10px">Carte de test : 4242 4242 4242 4242 · date future · CVC 123. Le numéro 4000 0000 0000 0002 simule un refus.</div></div>' +
           '</div></div>' +
-          '<label class="s-opt" data-pay="wallet"><input type="radio" name="pay" value="wallet"><div class="body"><div class="t">Paiement mobile (Flouci / Konnect)</div><div class="d">Vous serez redirigé vers l’application de paiement pour valider.</div></div></label>' +
+          '<label class="s-opt" data-pay="wallet"><input type="radio" name="pay" value="wallet"><div class="body"><div class="t">PayPal</div><div class="d">Vous serez redirigé vers PayPal pour valider le paiement.</div></div></label>' +
           '<label class="s-opt" data-pay="cod"><input type="radio" name="pay" value="cod"><div class="body"><div class="t" id="cod-t">Paiement à la livraison</div><div class="d" id="cod-d">Réglez en espèces à la réception de votre colis.</div></div></label>' +
         '</div>' +
         '<label class="s-check" style="margin-top:20px" id="cgv-w"><input type="checkbox" id="cgv"> <span>J’ai lu et j’accepte les <a href="#" onclick="return false;">conditions générales de vente</a> et la <a href="#" onclick="return false;">politique de confidentialité</a>.</span></label>' +
@@ -157,7 +156,7 @@
 
   /* ---------- adresses enregistrées ---------- */
   function fillAddress(a) {
-    ['firstName', 'lastName', 'phone', 'address', 'complement', 'zip', 'city', 'governorate'].forEach(function (k) { if ($(k)) $(k).value = (a && a[k]) || ''; });
+    ['firstName', 'lastName', 'phone', 'address', 'complement', 'zip', 'city'].forEach(function (k) { if ($(k)) $(k).value = (a && a[k]) || ''; });
   }
   function initSaved() {
     var user = V.currentUser(); if (!user) return;
@@ -181,10 +180,10 @@
   /* ---------- validation ---------- */
   function validate1() {
     var ok = true;
-    ['firstName', 'lastName', 'address', 'city', 'governorate'].forEach(function (id) { ok = setInvalid(id, !val(id)) && ok; });
+    ['firstName', 'lastName', 'address', 'city'].forEach(function (id) { ok = setInvalid(id, !val(id)) && ok; });
     ok = setInvalid('email', !V.isEmail(val('email'))) && ok;
     ok = setInvalid('phone', !V.isPhone(val('phone'))) && ok;
-    ok = setInvalid('zip', !/^\d{4}$/.test(val('zip'))) && ok;
+    ok = setInvalid('zip', !/^\d{5}$/.test(val('zip'))) && ok;
     var acc = $('mkAccount');
     if (acc && acc.checked) {
       var e = $('acc-err'); e.classList.remove('show');
@@ -215,7 +214,7 @@
   function placeOrder(payment) {
     var lines = V.linesFromCart(), totals = V.computeTotals(V.cartLines(), state.delivery), ship = CFG.shipping[state.delivery];
     var contact = { firstName: val('firstName'), lastName: val('lastName'), email: val('email').toLowerCase(), phone: val('phone') };
-    var address = { id: state.savedAddr && state.savedAddr !== 'new' ? state.savedAddr : null, label: 'Livraison', firstName: val('firstName'), lastName: val('lastName'), phone: val('phone'), address: val('address'), complement: val('complement'), zip: val('zip'), city: val('city'), governorate: val('governorate') };
+    var address = { id: state.savedAddr && state.savedAddr !== 'new' ? state.savedAddr : null, label: 'Livraison', firstName: val('firstName'), lastName: val('lastName'), phone: val('phone'), address: val('address'), complement: val('complement'), zip: val('zip'), city: val('city') };
     var order = V.createOrder({ contact: contact, address: address, lines: lines, totals: totals, note: val('note'),
       delivery: { key: ship.key, label: ship.label, eta: ship.eta, price: totals.shipping }, payment: payment });
     var after = function () { V.clearCart(); location.href = 'confirmation.html?o=' + encodeURIComponent(order.id); };
@@ -246,7 +245,7 @@
         placeOrder({ key: 'card', label: 'Carte bancaire •••• ' + last4, status: 'Payée' });
       });
     } else if (state.payment === 'wallet') {
-      processing('Redirection vers Konnect…', 'Simulation : validation du paiement dans l’application mobile.', 2000, function () { placeOrder({ key: 'wallet', label: 'Paiement mobile (Konnect / Flouci)', status: 'Payée' }); });
+      processing('Redirection vers PayPal…', 'Simulation : validation du paiement sur PayPal.', 2000, function () { placeOrder({ key: 'wallet', label: 'PayPal', status: 'Payée' }); });
     } else {
       placeOrder({ key: 'cod', label: state.delivery === 'pickup' ? 'Paiement en pharmacie' : 'Paiement à la livraison', status: 'À payer ' + (state.delivery === 'pickup' ? 'au retrait' : 'à la livraison') });
     }
@@ -284,7 +283,7 @@
   });
 
   // formatage des champs
-  $('phone').addEventListener('blur', function () { if (V.isPhone(this.value)) this.value = V.fmtPhone(this.value).replace('+216 ', ''); });
+  $('phone').addEventListener('blur', function () { if (V.isPhone(this.value)) this.value = V.fmtPhone(this.value); });
   $('cardNum').addEventListener('input', function () { var d = this.value.replace(/\D/g, '').slice(0, 19); this.value = d.replace(/(.{4})/g, '$1 ').trim(); });
   $('cardExp').addEventListener('input', function () { var d = this.value.replace(/\D/g, '').slice(0, 4); this.value = d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d; });
   $('cardCvc').addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 4); });

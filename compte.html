@@ -72,7 +72,7 @@
     root.innerHTML = '<div class="s-auth"><div class="panel"><h1>Créer un compte</h1><p class="sub">Quelques secondes suffisent pour commencer.</p>' +
       '<form id="f" novalidate><div class="s-form-grid">' + field('firstName', 'Prénom', { auto: 'given-name' }) + field('lastName', 'Nom', { auto: 'family-name' }) +
       field('email', 'Adresse e-mail', { type: 'email', auto: 'email', full: true, err: 'Saisissez une adresse e-mail valide', value: V.qs('email') || '' }) +
-      field('phone', 'Téléphone', { type: 'tel', auto: 'tel', full: true, ph: '22 123 456', err: 'Numéro tunisien à 8 chiffres (ex. 22 123 456)' }) +
+      field('phone', 'Téléphone', { type: 'tel', auto: 'tel', full: true, ph: '06 12 34 56 78', err: 'Numéro français à 10 chiffres (ex. 06 12 34 56 78)' }) +
       '<div class="full">' + field('pw', 'Mot de passe', { type: 'password', auto: 'new-password', err: '8 caractères minimum' }) + '<div class="s-meter" id="meter" data-l="0"><i></i><i></i><i></i><i></i></div><div class="s-muted" id="meter-l" style="margin-top:4px;min-height:16px">8 caractères minimum, avec majuscule et chiffre pour plus de sécurité.</div></div>' +
       field('pw2', 'Confirmer le mot de passe', { type: 'password', auto: 'new-password', full: true, err: 'Les mots de passe ne correspondent pas' }) + '</div>' +
       '<label class="s-check"><input type="checkbox" id="nl"> Je souhaite recevoir les nouveautés et conseils VITAL par e-mail</label>' +
@@ -80,7 +80,7 @@
       alertBox('err') + '<button class="btn-primary btn-block" type="submit">Créer mon compte</button></form>' +
       '<p class="s-muted" style="text-align:center;margin:20px 0 0">Déjà un compte ? <a class="link-plain" href="#connexion">Se connecter</a></p></div>' + authSide() + '</div>';
     $('pw').addEventListener('input', function () { var l = V.pwStrength(this.value); $('meter').setAttribute('data-l', l); if (l) $('meter-l').textContent = 'Robustesse : ' + strengthLabel(l); });
-    $('phone').addEventListener('blur', function () { if (V.isPhone(this.value)) this.value = V.fmtPhone(this.value).replace('+216 ', ''); });
+    $('phone').addEventListener('blur', function () { if (V.isPhone(this.value)) this.value = V.fmtPhone(this.value); });
     $('f').addEventListener('submit', function (e) {
       e.preventDefault();
       var ok = true;
@@ -183,10 +183,10 @@
     return '<form id="af" novalidate><div class="s-form-grid">' +
       field('label', 'Nom de l’adresse', { full: true, ph: 'Domicile, Bureau…', value: a.label || '' }) +
       field('firstName', 'Prénom', { value: a.firstName || (V.currentUser().firstName) }) + field('lastName', 'Nom', { value: a.lastName || (V.currentUser().lastName) }) +
-      field('phone', 'Téléphone', { type: 'tel', full: true, ph: '22 123 456', err: 'Numéro tunisien à 8 chiffres', value: a.phone || V.currentUser().phone || '' }) +
+      field('phone', 'Téléphone', { type: 'tel', full: true, ph: '06 12 34 56 78', err: 'Numéro français à 10 chiffres (ex. 06 12 34 56 78)', value: a.phone || V.currentUser().phone || '' }) +
       field('address', 'Adresse', { full: true, value: a.address || '' }) + field('complement', 'Complément', { opt: true, full: true, value: a.complement || '' }) +
-      field('zip', 'Code postal', { max: 4, inputmode: 'numeric', err: 'Code postal à 4 chiffres', value: a.zip || '' }) + field('city', 'Ville', { value: a.city || '' }) +
-      field('governorate', 'Gouvernorat', { select: CFG.governorates, full: true }) + '</div>' +
+      field('zip', 'Code postal', { max: 5, inputmode: 'numeric', err: 'Code postal à 5 chiffres', value: a.zip || '' }) + field('city', 'Ville', { value: a.city || '' }) +
+      '</div>' +
       '<label class="s-check" style="margin-top:14px"><input type="checkbox" id="isDef"' + (a.isDefault ? ' checked' : '') + '> Définir comme adresse par défaut</label></form>';
   }
   function viewAddresses() {
@@ -200,14 +200,13 @@
       var ov = V.modal({ title: a ? 'Modifier l’adresse' : 'Nouvelle adresse', html: addrForm(a), actions: [
         { label: 'Annuler' },
         { label: 'Enregistrer', cls: 'btn-primary', onClick: function () {
-          var ok = true; ['label', 'firstName', 'lastName', 'address', 'city', 'governorate'].forEach(function (id) { ok = setInvalid(id, !val(id)) && ok; });
-          ok = setInvalid('phone', !V.isPhone(val('phone'))) && ok; ok = setInvalid('zip', !/^\d{4}$/.test(val('zip'))) && ok;
+          var ok = true; ['label', 'firstName', 'lastName', 'address', 'city'].forEach(function (id) { ok = setInvalid(id, !val(id)) && ok; });
+          ok = setInvalid('phone', !V.isPhone(val('phone'))) && ok; ok = setInvalid('zip', !/^\d{5}$/.test(val('zip'))) && ok;
           if (!ok) return false;
-          V.saveAddress({ id: a ? a.id : null, label: val('label'), firstName: val('firstName'), lastName: val('lastName'), phone: val('phone'), address: val('address'), complement: val('complement'), zip: val('zip'), city: val('city'), governorate: val('governorate'), isDefault: $('isDef').checked || (a && a.isDefault) });
+          V.saveAddress({ id: a ? a.id : null, label: val('label'), firstName: val('firstName'), lastName: val('lastName'), phone: val('phone'), address: val('address'), complement: val('complement'), zip: val('zip'), city: val('city'), isDefault: $('isDef').checked || (a && a.isDefault) });
           V.toast('Adresse enregistrée'); viewAddresses();
         } }] });
       ov.querySelector('.s-modal').style.maxWidth = '560px';
-      if (a) $('governorate').value = a.governorate;
     }
     $('add-addr').addEventListener('click', function () { open(null); });
     document.querySelectorAll('[data-edit]').forEach(function (b) { b.addEventListener('click', function () { open(list.filter(function (a) { return a.id === b.getAttribute('data-edit'); })[0]); }); });
@@ -229,7 +228,7 @@
     var inner = '<div class="s-card pad" style="margin-bottom:20px"><h2>Informations personnelles</h2><form id="pf" novalidate><div class="s-form-grid">' +
       field('firstName', 'Prénom', { value: u.firstName }) + field('lastName', 'Nom', { value: u.lastName }) +
       '<div class="s-field full"><label>Adresse e-mail</label><input class="s-input" value="' + esc(u.email) + '" disabled></div>' +
-      field('phone', 'Téléphone', { type: 'tel', full: true, ph: '22 123 456', err: 'Numéro tunisien à 8 chiffres', value: u.phone || '' }) + '</div>' +
+      field('phone', 'Téléphone', { type: 'tel', full: true, ph: '06 12 34 56 78', err: 'Numéro français à 10 chiffres (ex. 06 12 34 56 78)', value: u.phone || '' }) + '</div>' +
       '<label class="s-check" style="margin-top:14px"><input type="checkbox" id="nl"' + (u.newsletter ? ' checked' : '') + '> Recevoir les nouveautés et conseils VITAL par e-mail</label>' +
       '<div class="s-alert ok" id="pmsg" style="margin-top:14px"></div><div style="margin-top:18px"><button class="btn-primary" type="submit">Enregistrer</button></div></form></div>' +
       '<div class="s-card pad"><h2>Mot de passe</h2><form id="wf" novalidate><div class="s-form-grid">' +
