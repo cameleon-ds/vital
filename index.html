@@ -59,6 +59,15 @@
   .hero-art { position: absolute; right: max(40px, calc((100% - 1200px) / 2)); top: 50%; margin-top: -200px; width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; }
   .hero-art img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
 
+  /* Slide avec visuel pleine largeur (photo publicitaire) */
+  .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 70% 18%); z-index: 0; transform-origin: 70% 40%; }
+  .hero-veil { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(90deg, rgba(247, 240, 229, .78) 0%, rgba(247, 240, 229, .45) 28%, rgba(247, 240, 229, 0) 46%); }
+  .hero-slide.has-banner .hero-content { max-width: 430px; }
+  .hero-slide.has-banner .hero-title { font-size: 42px; }
+  .hero-slide.has-banner .hero-sub { max-width: 400px; }
+  .hero-slide.active .hero-bg { animation: heroZoom 7s cubic-bezier(.22, 1, .36, 1) backwards; }
+  @keyframes heroZoom { from { transform: scale(1.08); opacity: .6; } to { transform: none; opacity: 1; } }
+
   /* Entrée en cascade : badge → titre → texte → boutons (le produit arrive de la droite) */
   .hero-slide.active .anim { animation: heroUp .9s cubic-bezier(.22, 1, .36, 1) backwards; animation-delay: calc(.45s + var(--i, 0) * .16s); }
   .hero-slide.active .hero-art img { animation: heroArt 1.2s cubic-bezier(.22, 1, .36, 1) .35s backwards; }
@@ -82,19 +91,24 @@
   .hero-arrow:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
   .hero-arrow.prev { left: 24px; }
   .hero-arrow.next { right: 24px; }
-  @media (max-width: 1100px) { .hero-art { width: 320px; height: 320px; margin-top: -160px; } .hero-title { font-size: 40px; } }
+  @media (max-width: 1100px) { .hero-art { width: 320px; height: 320px; margin-top: -160px; } .hero-title, .hero-slide.has-banner .hero-title { font-size: 36px; } .hero-slide.has-banner .hero-content { max-width: 330px; } .hero-veil { background: linear-gradient(90deg, rgba(247, 240, 229, .85) 0%, rgba(247, 240, 229, .55) 34%, rgba(247, 240, 229, 0) 55%); } }
   @media (max-width: 720px) {
     .hero { height: auto; min-height: 480px; }
     .hero-track { height: auto; }
     .hero-slide { min-height: 480px; }
     .hero-inner, .hero-dots { padding: 0 20px; }
     .hero-art { display: none; }
-    .hero-title { font-size: 32px; }
+    .hero-title, .hero-slide.has-banner .hero-title { font-size: 30px; }
+    .hero-slide.has-banner { flex-direction: column; align-items: stretch; justify-content: flex-start; min-height: 0; }
+    .hero-slide.has-banner .hero-inner { padding-top: 32px; padding-bottom: 8px; }
+    .hero-slide.has-banner .hero-content { max-width: 100%; }
+    .hero-slide.has-banner .hero-bg { position: relative; inset: auto; order: 2; height: 300px; object-position: 80% 30%; flex: 0 0 auto; }
+    .hero-veil { display: none; }
     .hero-arrow { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     .hero-track { transition-duration: .01s; }
-    .hero-slide.active .anim, .hero-slide.active .hero-art img, .hero-slide.active .hero-badge::after { animation: none; }
+    .hero-slide.active .anim, .hero-slide.active .hero-art img, .hero-slide.active .hero-bg, .hero-slide.active .hero-badge::after { animation: none; }
   }
 
   /* Value props */
@@ -318,7 +332,7 @@
   var escapeHtml = V.escapeHtml, catByKey = V.catByKey;
 
   var HERO_SLIDES = [
-    { badge: 'VIP Skin — Equilibrium', badgeColor: '#72C6C7', title: 'Des soins visage pour rééquilibrer votre peau', sub: 'Sérum rénovateur, Green Cream, gel hydratation active et filtre solaire SPF 50+ : la gamme VIP Skin.', bg: 'linear-gradient(135deg, #F1F0F2 0%, #E4E3E7 100%)', cat: 'vip',  image: 'assets/produits/vip-skin-green-cream.jpg' },
+    { badge: 'VIP Skin — Equilibrium', badgeColor: '#72C6C7', title: 'Des soins visage pour rééquilibrer votre peau', sub: 'Sérum rénovateur, Green Cream, gel hydratation active et filtre solaire SPF 50+ : la gamme VIP Skin.', bg: '#F5ECDD', cat: 'vip',  image: 'assets/produits/vip-skin-green-cream.jpg', banner: 'assets/banners/slide-1.jpg', bannerAlt: 'Femme tenant la Green Cream VIP Skin Equilibrium' },
     { badge: 'AWA',                    badgeColor: '#72C6C7', title: 'Peaux grasses et obstruées : retrouvez l’équilibre', sub: 'Complexe équilibrant, mousse purifiante et gel matifiant teinté SPF 50+ pour une peau nette et matifiée.', bg: 'linear-gradient(135deg, #EDF3F6 0%, #DDE8EE 100%)', cat: 'awa', image: 'assets/produits/awa-mousse-purifiante.jpg' },
     { badge: 'MS — IDP Medical Skin',  badgeColor: '#72C6C7', title: 'Les soins dermatologiques de la peau', sub: 'Lotion atopic, protection solaire familiale, nettoyant purifiant et shampooings pour le cuir chevelu.', bg: 'linear-gradient(135deg, #ECEFF4 0%, #DEE3EC 100%)', cat: 'ms',  image: 'assets/produits/ms-atopic-lotion.jpg' }
   ];
@@ -338,14 +352,17 @@
   function buildHero() {
     var track = document.getElementById('hero-track');
     track.innerHTML = HERO_SLIDES.map(function (s, i) {
-      return '<div class="hero-slide" style="background:' + s.bg + ';" role="group" aria-roledescription="diapositive" aria-label="' + (i + 1) + ' sur ' + HERO_SLIDES.length + '">' +
+      var bannerHtml = s.banner ? '<img class="hero-bg" src="' + s.banner + '" alt="' + escapeHtml(s.bannerAlt || s.badge) + '"' + (i ? ' loading="lazy"' : ' fetchpriority="high"') + '><div class="hero-veil"></div>' : '';
+      var artHtml = s.banner ? '' : '<div class="hero-art"><img src="' + s.image + '" alt="' + escapeHtml(s.badge) + '"' + (i ? ' loading="lazy"' : '') + '></div>';
+      return '<div class="hero-slide' + (s.banner ? ' has-banner' : '') + '" style="background:' + s.bg + ';" role="group" aria-roledescription="diapositive" aria-label="' + (i + 1) + ' sur ' + HERO_SLIDES.length + '">' +
+        bannerHtml +
         '<div class="hero-inner"><div class="hero-content">' +
           '<span class="hero-badge anim" style="--i:0;color:' + s.badgeColor + ';">' + escapeHtml(s.badge) + '</span>' +
           '<h1 class="hero-title anim" style="--i:1;">' + escapeHtml(s.title) + '</h1>' +
           '<p class="hero-sub anim" style="--i:2;">' + escapeHtml(s.sub) + '</p>' +
           '<div class="hero-actions"><a href="#produits" class="btn-primary anim" style="--i:3;">Découvrir la gamme</a><a href="#categories" class="link-underline anim" style="--i:4;">Voir les catégories</a></div>' +
         '</div></div>' +
-        '<div class="hero-art"><img src="' + s.image + '" alt="' + escapeHtml(s.badge) + '"' + (i ? ' loading="lazy"' : '') + '></div>' +
+        artHtml +
       '</div>';
     }).join('');
     var dotsEl = document.getElementById('hero-dots');
