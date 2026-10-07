@@ -175,14 +175,15 @@
   .results-count { font-size: 13px; color: var(--gray-soft); }
 
   /* Newsletter */
-  .newsletter-section { max-width: 1280px; margin: 64px auto 0; padding: 0 40px; }
-  .newsletter { background: var(--ink); border-radius: 20px; padding: 44px 56px; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+  .newsletter-section { width: 100%; margin: 0; padding: 0; background: var(--ink); }
+  .newsletter { max-width: 1280px; margin: 0 auto; padding: 56px 40px; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
   .newsletter .title { font-size: 20px; font-weight: 800; color: #fff; }
   .newsletter .sub { font-size: 14px; color: #B9BCC1; margin-top: 8px; max-width: 420px; }
   .newsletter-form { display: flex; gap: 10px; flex-grow: 1; max-width: 420px; min-width: 260px; }
   .newsletter-form input { flex-grow: 1; padding: 14px 16px; border-radius: 10px; border: none; font-size: 14px; outline: none; }
   .newsletter-form button { background: var(--purple); color: #fff; border: none; padding: 14px 24px; border-radius: 10px; font-size: 14px; font-weight: 700; white-space: nowrap; }
   .newsletter-form button:hover { opacity: 0.92; }
+  @media (max-width: 720px) { .newsletter { padding: 40px 20px; } }
 
   /* Bannière promotionnelle fixe (MS Atopic Lotion) */
   .promo { position: relative; width: 100%; margin-top: 64px; overflow: hidden; background: #D4C3E2; min-height: clamp(420px, 42vw, 620px); display: flex; align-items: center; }
@@ -212,7 +213,7 @@
   @media (prefers-reduced-motion: reduce) { .promo-bg { transition: none; transform: none; } .promo.in .anim, .promo.in .promo-badge::after { animation: none; } }
 
   /* Footer */
-  footer { margin-top: 72px; background: #fff; border-top: 1px solid #ECEAEC; }
+  footer { margin-top: 0; background: #fff; border-top: 1px solid #ECEAEC; }
   .footer-grid { max-width: 1280px; margin: 0 auto; padding: 56px 40px 28px; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; }
   @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
   .footer-col { display: flex; flex-direction: column; gap: 12px; }
