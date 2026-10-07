@@ -127,3 +127,33 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .buy-btn:focu
 
 /* pastille du panier : texte sombre sur turquoise */
 .cart-badge { color: var(--cta-ink) !important; }
+
+/* ---- En-tête responsive : menu burger (tablette et mobile) ---- */
+.burger, .mm-panel, .mm-overlay { display: none; }
+@media (max-width: 1024px) {
+  nav.main-nav { display: none !important; }
+  header .wrap { flex-wrap: nowrap; gap: 14px; }
+  header .header-icons { margin-left: auto; gap: 18px; }
+  header .header-icons button[aria-label="Mon compte"] { display: none; }
+  header .logo img { height: 44px; }
+  .burger { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; width: 40px; height: 40px; padding: 0; background: none; border: none; flex-shrink: 0; margin-left: -8px; cursor: pointer; }
+  .burger span { display: block; width: 22px; height: 2px; background: var(--ink-strong, #2A2E34); transition: transform .35s cubic-bezier(.22, 1, .36, 1), opacity .2s ease, background .2s ease; }
+  .burger:hover span { background: var(--cta); }
+  .burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .mm-overlay { display: block; position: fixed; left: 0; right: 0; bottom: 0; top: var(--mm-top, 0); background: rgba(42, 46, 52, .45); opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility .35s; z-index: 18; }
+  .mm-overlay.open { opacity: 1; visibility: visible; }
+  .mm-panel { display: flex; flex-direction: column; position: fixed; left: 0; bottom: 0; top: var(--mm-top, 0); width: min(86vw, 360px); background: #fff; z-index: 19; padding: 12px 24px 28px; overflow-y: auto; transform: translateX(-100%); transition: transform .45s cubic-bezier(.77, 0, .18, 1); box-shadow: 8px 0 28px rgba(42, 46, 52, .12); }
+  .mm-panel.open { transform: none; }
+  .mm-link { display: block; font-size: 18px; font-weight: 700; color: var(--ink-strong, #2A2E34); padding: 16px 0; border-bottom: 1px solid #ECEAEC; transition: color .25s ease, padding-left .25s ease; }
+  .mm-link:hover, .mm-link.active { color: var(--accent-text); padding-left: 6px; }
+  .mm-link.sm { font-size: 15px; font-weight: 600; color: var(--gray); }
+  .mm-panel.open .mm-link { animation: mmIn .5s cubic-bezier(.22, 1, .36, 1) backwards; animation-delay: calc(.12s + var(--i, 5) * .05s); }
+  @keyframes mmIn { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+  .mm-account { margin-top: auto; padding-top: 28px; display: flex; flex-direction: column; }
+  .mm-head { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-soft); margin-bottom: 4px; }
+  .mm-cta { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 18px; width: 100%; text-align: center; }
+  body.mm-lock { overflow: hidden; }
+}
+@media (prefers-reduced-motion: reduce) { .mm-panel, .mm-overlay, .burger span { transition-duration: .01s; } .mm-panel.open .mm-link { animation: none; } }
