@@ -144,8 +144,8 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .buy-btn:focu
   .burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
   .mm-overlay { display: block; position: fixed; left: 0; right: 0; bottom: 0; top: var(--mm-top, 0); background: rgba(42, 46, 52, .45); opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility .35s; z-index: 18; }
   .mm-overlay.open { opacity: 1; visibility: visible; }
-  .mm-panel { display: flex; flex-direction: column; position: fixed; left: 0; bottom: 0; top: var(--mm-top, 0); width: min(86vw, 360px); background: #fff; z-index: 19; padding: 12px 24px 28px; overflow-y: auto; transform: translateX(-100%); transition: transform .45s cubic-bezier(.77, 0, .18, 1); box-shadow: 8px 0 28px rgba(42, 46, 52, .12); }
-  .mm-panel.open { transform: none; }
+  .mm-panel { display: flex; flex-direction: column; position: fixed; left: 0; bottom: 0; top: var(--mm-top, 0); width: min(86vw, 360px); background: #fff; z-index: 19; padding: 12px 24px 28px; overflow-y: auto; transform: translateX(-100%); transition: transform .45s cubic-bezier(.77, 0, .18, 1), box-shadow .45s ease; box-shadow: none; }
+  .mm-panel.open { transform: none; box-shadow: 8px 0 28px rgba(42, 46, 52, .12); }
   .mm-link { display: block; font-size: 18px; font-weight: 700; color: var(--ink-strong, #2A2E34); padding: 16px 0; border-bottom: 1px solid #ECEAEC; transition: color .25s ease, padding-left .25s ease; }
   .mm-link:hover, .mm-link.active { color: var(--accent-text); padding-left: 6px; }
   .mm-link.sm { font-size: 15px; font-weight: 600; color: var(--gray); }
