@@ -161,3 +161,10 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .buy-btn:focu
 /* Tiroir panier : boutons « Commander » / « Voir le panier » centrés (texte et bouton) */
 .s-drawer .df .btns { align-items: stretch; }
 .s-drawer .df .btns a, .s-drawer .df .btns button { display: flex; align-items: center; justify-content: center; width: 100%; text-align: center; }
+
+/* ---- Pastilles : toujours parfaitement rondes (exception à la règle « aucun arrondi ») ---- */
+.cart-badge, .s-line.compact .img b, .s-steps .st i, .s-sec-head .n, .s-timeline .tl i, .s-done .ck,
+.header-icons button.has-user::after, .s-status::before { border-radius: 50% !important; }
+.cart-badge, .s-line.compact .img b { min-width: 18px; height: 18px; padding: 0 !important; line-height: 1; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
+.cart-badge { width: 18px; }
+.s-line.compact .img b { width: 20px; min-width: 20px; height: 20px; }
