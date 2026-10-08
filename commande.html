@@ -287,7 +287,7 @@
   $('cardNum').addEventListener('input', function () { var d = this.value.replace(/\D/g, '').slice(0, 19); this.value = d.replace(/(.{4})/g, '$1 ').trim(); });
   $('cardExp').addEventListener('input', function () { var d = this.value.replace(/\D/g, '').slice(0, 4); this.value = d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d; });
   $('cardCvc').addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 4); });
-  $('zip').addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 4); });
+  $('zip').addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 5); });
   root.addEventListener('input', function (e) { var w = e.target.closest('.s-field'); if (w) w.classList.remove('invalid'); if (e.target.id === 'cgv') $('cgv-w').classList.remove('invalid'); });
 
   // code promo (dans le récapitulatif, re-rendu à chaque changement)
