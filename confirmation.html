@@ -34,7 +34,7 @@
 
   root.innerHTML =
     '<div class="s-done"><div class="ck"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' +
-      '<h1>Merci ' + esc(o.contact.firstName) + ', votre commande est confirmée !</h1>' +
+      '<h1>Merci ' + esc(o.contact.firstName) + ',<br>votre commande est confirmée !</h1>' +
       '<p>Un e-mail de confirmation a été envoyé à <b>' + esc(o.email) + '</b>. ' + (cod ? 'Vous réglerez ' + (o.delivery.key === 'pickup' ? 'en pharmacie au retrait' : 'à la livraison') + '.' : 'Votre paiement a bien été reçu.') + '</p>' +
       '<span class="ref">Commande ' + esc(o.id) + '</span>' +
       '<div class="s-actions"><a class="btn-primary" href="' + (guest ? 'index.html#produits' : 'compte.html#commande/' + encodeURIComponent(o.id)) + '">' + (guest ? 'Continuer mes achats' : 'Suivre ma commande') + '</a><a class="btn-ghost" href="index.html">Retour à l’accueil</a></div></div>' +
