@@ -72,14 +72,14 @@ button, .btn-primary, .btn-purple, .btn-ghost, .btn-danger, .buy-btn, .add-btn, 
   background: var(--cta-hover);
   color: var(--cta-ink);
   transform: translateY(-3px);
-  box-shadow: 0 10px 22px rgba(114, 198, 199, 0.5);
+  box-shadow: 0 10px 22px rgba(var(--cta-rgb), 0.5);
   opacity: 1;
 }
 .btn-primary:not([disabled]):not(.is-disabled):active,
 .btn-purple:not([disabled]):active, .buy-btn:active, .add-btn:active, .s-add:active,
 .newsletter-form button:active {
   transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(114, 198, 199, 0.4);
+  box-shadow: 0 2px 6px rgba(var(--cta-rgb), 0.4);
   transition-duration: .1s;
 }
 /* petit reflet qui traverse le bouton au survol */
@@ -98,7 +98,7 @@ button, .btn-primary, .btn-purple, .btn-ghost, .btn-danger, .buy-btn, .add-btn, 
 
 /* ---- 4. Boutons secondaires ---- */
 .btn-ghost { background: #fff; color: var(--ink-strong); border: 1px solid var(--border); }
-.btn-ghost:hover { background: var(--cta-tint); border-color: var(--cta); color: var(--ink-strong); transform: translateY(-2px); box-shadow: 0 6px 14px rgba(114, 198, 199, 0.28); }
+.btn-ghost:hover { background: var(--cta-tint); border-color: var(--cta); color: var(--ink-strong); transform: translateY(-2px); box-shadow: 0 6px 14px rgba(var(--cta-rgb), 0.28); }
 .btn-ghost:active { transform: translateY(0); box-shadow: none; transition-duration: .1s; }
 .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(192, 57, 43, 0.18); }
 
@@ -168,3 +168,43 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .buy-btn:focu
 .cart-badge, .s-line.compact .img b { min-width: 18px; height: 18px; padding: 0 !important; line-height: 1; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
 .cart-badge { width: 18px; }
 .s-line.compact .img b { width: 20px; min-width: 20px; height: 20px; }
+
+/* ============ Thèmes de couleur (Edit color) ============
+   La couleur primaire vient des variables ci-dessous ; le bouton « Edit color » du pied de page
+   pose data-theme="lavande" ou "myrtille" sur <html> (défaut : menthe #72C6C7). */
+:root { --cta-rgb: 114, 198, 199; --cta-soft: #E8F5F5; }
+html[data-theme="lavande"] { --cta: #bd9ed6; --cta-hover: #a988c6; --cta-rgb: 189, 158, 214; --cta-tint: rgba(189, 158, 214, 0.16); --accent-text: #6B4A8C; --cta-soft: #F3EDF8; }
+html[data-theme="myrtille"] { --cta: #9ea2d6; --cta-hover: #878cc8; --cta-rgb: 158, 162, 214; --cta-tint: rgba(158, 162, 214, 0.16); --accent-text: #4A4F94; --cta-soft: #EEEFF8; }
+:root { --purple: var(--cta); --purple-dark: var(--cta-hover); --purple-soft: var(--cta-soft); }
+
+/* bande du haut = couleur CTA */
+.topbar { background: var(--cta) !important; color: var(--cta-ink) !important; }
+
+/* icônes, titres de marque et éléments qui avaient la couleur en dur */
+svg[stroke="#72C6C7"] { stroke: var(--cta); }
+svg [stroke="#72C6C7"] { stroke: var(--cta); }
+[fill="#72C6C7"] { fill: var(--cta); }
+.hero-badge { color: var(--cta) !important; }
+.s-input:focus { box-shadow: 0 0 0 3px rgba(var(--cta-rgb), .28); }
+.s-timeline .tl.cur i { box-shadow: 0 0 0 4px rgba(var(--cta-rgb), .30); }
+.s-ship-bar .track { background: color-mix(in srgb, var(--cta) 32%, #fff); }
+.s-opt.sel, .s-addr.add { background: color-mix(in srgb, var(--cta) 8%, #fff); }
+[style*="CBEBEB" i] { border-color: color-mix(in srgb, var(--cta) 32%, #fff) !important; }
+
+/* bouton « Edit color » (pied de page, en bas à droite) */
+.theme-picker { position: relative; margin-left: auto; }
+.theme-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; border: 1px solid #DADDE1; color: #4B5159; font: inherit; font-size: 12px; font-weight: 700; padding: 8px 14px; cursor: pointer; transition: border-color .25s ease, color .25s ease; }
+.theme-btn:hover, .theme-picker.open .theme-btn { border-color: var(--cta); color: var(--accent-text); }
+.theme-btn svg { color: var(--cta); }
+.theme-menu { position: absolute; right: 0; bottom: calc(100% + 8px); min-width: 190px; background: #fff; border: 1px solid #E3E5E8; box-shadow: 0 12px 32px rgba(42, 46, 52, .14); padding: 6px; display: none; flex-direction: column; z-index: 40; }
+.theme-picker.open .theme-menu { display: flex; animation: themeIn .25s cubic-bezier(.22, 1, .36, 1); }
+@keyframes themeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.theme-opt { display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; padding: 10px 12px; font: inherit; font-size: 13px; font-weight: 600; color: #2A2E34; cursor: pointer; text-align: left; }
+.theme-opt:hover { background: #F4F5F7; }
+.theme-opt i { width: 20px; height: 20px; flex-shrink: 0; border: 2px solid #fff; box-shadow: 0 0 0 1px #C9CDD2; border-radius: 50% !important; }
+.theme-opt.on { color: var(--accent-text); }
+.theme-opt.on i { box-shadow: 0 0 0 2px var(--cta); }
+.theme-opt.on::after { content: ''; margin-left: auto; width: 9px; height: 5px; border-left: 2px solid var(--accent-text); border-bottom: 2px solid var(--accent-text); transform: rotate(-45deg); }
+@media (prefers-reduced-motion: reduce) { .theme-picker.open .theme-menu { animation: none; } }
+.theme-picker .theme-btn span, .theme-picker .theme-opt span { color: inherit; font-size: inherit; }
+.theme-picker .theme-opt span { font-size: 13px; }
