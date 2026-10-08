@@ -157,3 +157,7 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .buy-btn:focu
   body.mm-lock { overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { .mm-panel, .mm-overlay, .burger span { transition-duration: .01s; } .mm-panel.open .mm-link { animation: none; } }
+
+/* Tiroir panier : boutons « Commander » / « Voir le panier » centrés (texte et bouton) */
+.s-drawer .df .btns { align-items: stretch; }
+.s-drawer .df .btns a, .s-drawer .df .btns button { display: flex; align-items: center; justify-content: center; width: 100%; text-align: center; }
