@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
 /* VITAL — thème des boutons (à charger EN DERNIER dans chaque page).
    Une seule source de vérité : modifier les 3 variables ci-dessous change tous les CTA du site. */
 :root {
@@ -212,3 +213,6 @@ svg [stroke="#72C6C7"] { stroke: var(--cta); }
 
 /* ---- Grands titres : #162A4C ---- */
 h1, h2, .hero-title, .promo-title, .s-title, .s-card h2, .s-done h1, .s-drawer .dh h2, .s-modal h2, .s-auth .panel h1, .s-auth .side h2 { color: var(--title) !important; }
+
+/* ---- Police des grands titres : DM Serif Display (une seule graisse : 400) ---- */
+h1, h2, .hero-title, .promo-title, .s-title, .s-card h2, .s-done h1, .s-drawer .dh h2, .s-modal h2, .s-auth .panel h1, .s-auth .side h2 { font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif !important; font-weight: 400 !important; font-synthesis: none; letter-spacing: 0 !important; }
