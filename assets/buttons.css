@@ -214,5 +214,26 @@ svg [stroke="#72C6C7"] { stroke: var(--cta); }
 /* ---- Grands titres : #162A4C ---- */
 h1, h2, .hero-title, .promo-title, .s-title, .s-card h2, .s-done h1, .s-drawer .dh h2, .s-modal h2, .s-auth .panel h1, .s-auth .side h2 { color: var(--title) !important; }
 
-/* ---- Police des grands titres : DM Serif Display (une seule graisse : 400) ---- */
-h1, h2, .hero-title, .promo-title, .s-title, .s-card h2, .s-done h1, .s-drawer .dh h2, .s-modal h2, .s-auth .panel h1, .s-auth .side h2 { font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif !important; font-weight: 400 !important; font-synthesis: none; letter-spacing: 0 !important; }
+/* ---- Police des grands titres : DM Serif Display, en gras, un cran plus grande ---- */
+h1, h2, .hero-title, .promo-title, .s-title, .s-card h2, .s-done h1, .s-drawer .dh h2, .s-modal h2, .s-auth .panel h1, .s-auth .side h2 { font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif !important; font-weight: 700 !important; letter-spacing: 0 !important; }
+.hero-title { font-size: 54px !important; }
+.hero-slide.has-banner .hero-title { font-size: 48px !important; }
+.promo-title { font-size: 46px !important; }
+.section-head h2 { font-size: 31px !important; }
+.info h1 { font-size: 40px !important; }
+.details h2.section, .related h2 { font-size: 29px !important; }
+.notfound h1 { font-size: 30px !important; }
+.s-title { font-size: 38px !important; }
+.s-section-h h2 { font-size: 27px !important; }
+.s-auth .panel h1 { font-size: 32px !important; }
+.s-auth .side h2 { font-size: 25px !important; }
+.s-card h2, .s-drawer .dh h2 { font-size: 22px !important; }
+.s-modal h2 { font-size: 25px !important; }
+.s-done h1 { font-size: 36px !important; }
+@media (max-width: 1100px) {
+  .hero-title, .hero-slide.has-banner .hero-title { font-size: 40px !important; }
+  .promo-title { font-size: 38px !important; }
+}
+@media (max-width: 820px) { .promo-title { font-size: 32px !important; } }
+@media (max-width: 760px) { .info h1 { font-size: 33px !important; } .s-title { font-size: 32px !important; } .section-head h2 { font-size: 28px !important; } }
+@media (max-width: 720px) { .hero-title, .hero-slide.has-banner .hero-title { font-size: 34px !important; } .s-done h1 { font-size: 31px !important; } }
