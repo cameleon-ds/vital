@@ -155,7 +155,7 @@
   /* Onglets de catégories (image + texte) */
   .use-tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px; }
   .use-tab { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 0; border: 0; background: transparent; color: var(--ink-strong); text-align: center; cursor: pointer; }
-  .use-tab .ut-img { display: block; width: 100%; max-width: 200px; aspect-ratio: 1 / 1; padding: 0; border: 0; box-sizing: border-box; background: #fff; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease; }
+  .use-tab .ut-img { display: block; width: 100%; max-width: 156px; aspect-ratio: 1 / 1; padding: 0; border: 0; box-sizing: border-box; background: #fff; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease; }
   .use-tab .ut-img img { display: block; height: 100%; width: 100%; object-fit: cover; object-position: 50% 14%; }
   .use-tab:hover .ut-img { transform: scale(1.04); box-shadow: 0 0 0 4px #fff, 0 0 0 7px var(--cta); }
   .use-tab .ut-txt { display: block; }
@@ -168,8 +168,8 @@
   @media (max-width: 900px) {
     .use-tabs { display: flex; overflow-x: auto; scrollbar-width: none; gap: 20px; padding: 10px 10px 8px; margin: 0 -10px; }
     .use-tabs::-webkit-scrollbar { display: none; }
-    .use-tab { flex: 0 0 140px; }
-    .use-tab .ut-img { max-width: none; width: 132px; }
+    .use-tab { flex: 0 0 120px; }
+    .use-tab .ut-img { max-width: none; width: 112px; }
     .use-tab .ut-name { font-size: 14px; }
   }
   @media (max-width: 1024px) { .cat-grid { grid-template-columns: 1fr; } }
