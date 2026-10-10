@@ -244,6 +244,7 @@
   .awa-band-text { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 28px; padding: 56px 56px 104px max(88px, calc((100vw - 1280px) / 2 + 40px)); }
   .awa-band-text h2 { margin: 0; font-size: 40px; line-height: 1.18; max-width: 560px; }
   .awa-sub { margin: -8px 0 0; max-width: 520px; font-size: 18px; line-height: 1.55; font-weight: 500; color: #1E3556; }
+  .awa-desc { margin: -12px 0 0; max-width: 520px; font-size: 16px; line-height: 1.6; font-weight: 400; color: #1E3556; }
   .awa-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 32px; border: 0; background: #162A4C; color: #fff; font: inherit; font-size: 15px; font-weight: 700; letter-spacing: 0.01em; cursor: pointer; transition: transform .3s ease, box-shadow .3s ease, background .3s ease; }
   .awa-btn:hover { background: #0F1F3A; transform: translateY(-3px); box-shadow: 0 10px 22px rgba(22, 42, 76, .28); }
   .awa-btn:active { transform: translateY(0); box-shadow: none; }
@@ -259,6 +260,7 @@
   .awa-slide.active .awa-band-text > * { opacity: 1; transform: none; transition: opacity .7s ease .15s, transform .7s cubic-bezier(.22, 1, .36, 1) .15s; }
   .awa-slide.active .awa-band-text > *:nth-child(2) { transition-delay: .25s; }
   .awa-slide.active .awa-band-text > *:nth-child(3) { transition-delay: .35s; }
+  .awa-slide.active .awa-band-text > *:nth-child(4) { transition-delay: .45s; }
   .awa-ctrl { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
   .awa-arrow { position: absolute; top: 50%; margin-top: -24px; width: 48px; height: 48px; z-index: 3; background: rgba(255, 255, 255, .85); border: 1px solid var(--border); color: var(--ink-strong); display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; pointer-events: auto; opacity: 0; transition: opacity .3s ease, background .3s ease, transform .3s ease; }
   .awa-band:hover .awa-arrow, .awa-arrow:focus-visible { opacity: 1; }
@@ -568,6 +570,9 @@
     if (!track) return;
     var first = track.querySelector('.awa-slide');
     var awa = PRODUCTS.filter(function (p) { return p.category === 'awa'; });
+    var AWA_DESC = {
+      'awa-complexe-equilibrant': "Le soin de jour intelligent qui stoppe l'acné, resserre les pores et absorbe le sébum en continu pour une peau mate et nette toute la journée."
+    };
     awa.forEach(function (p) {
       var href = 'producto.html?p=' + p.slug;
       var div = document.createElement('div');
@@ -576,6 +581,7 @@
         '<div class="awa-band-text">' +
           '<h2>' + escapeHtml(p.name) + '</h2>' +
           '<p class="awa-sub">' + escapeHtml(p.sub) + (p.size ? ' · ' + escapeHtml(p.size) : '') + '</p>' +
+          (AWA_DESC[p.slug] ? '<p class="awa-desc">' + escapeHtml(AWA_DESC[p.slug]) + '</p>' : '') +
           '<button type="button" class="awa-btn" data-add="' + p.id + '" aria-label="Ajouter ' + escapeHtml(p.name) + ' au panier">Ajouter au panier</button>' +
         '</div>' +
         '<div class="awa-band-img prod"><a href="' + href + '" tabindex="-1" aria-label="Voir ' + escapeHtml(p.name) + '"><img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" loading="lazy"></a></div>';
