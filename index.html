@@ -155,8 +155,8 @@
   /* Onglets de catégories (image + texte) */
   .use-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
   .use-tab { display: flex; flex-direction: column; align-items: stretch; padding: 0; border: 1px solid var(--border); background: #fff; color: var(--ink-strong); text-align: center; cursor: pointer; overflow: hidden; border-bottom: 3px solid var(--border); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease; }
-  .use-tab .ut-img { display: flex; align-items: center; justify-content: center; height: 170px; background: var(--cta-soft, #F2F7F8); overflow: hidden; }
-  .use-tab .ut-img img { height: 100%; width: 100%; object-fit: contain; mix-blend-mode: multiply; padding: 14px; box-sizing: border-box; transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+  .use-tab .ut-img { display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 5; background: var(--cta-soft, #F2F7F8); overflow: hidden; }
+  .use-tab .ut-img img { height: 100%; width: 100%; object-fit: cover; object-position: 50% 20%; transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
   .use-tab:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(54, 59, 66, .10); border-bottom-color: var(--cta); }
   .use-tab:hover .ut-img img { transform: scale(1.06); }
   .use-tab .ut-txt { display: flex; flex-direction: column; gap: 3px; padding: 16px 12px 18px; }
@@ -167,8 +167,7 @@
   .use-tab:focus-visible { outline: 3px solid var(--cta); outline-offset: 3px; }
   @media (max-width: 900px) {
     .use-tabs { display: flex; overflow-x: auto; scroll-snap-type: x proximity; gap: 12px; padding: 4px 2px 12px; margin: 0 -2px; }
-    .use-tab { flex: 0 0 150px; scroll-snap-align: start; }
-    .use-tab .ut-img { height: 130px; }
+    .use-tab { flex: 0 0 160px; scroll-snap-align: start; }
   }
   @media (max-width: 1024px) { .cat-grid { grid-template-columns: 1fr; } }
 
@@ -783,15 +782,15 @@
 
   /* ---------- Catégories (onglets image + texte) : filtrent la grille « Tous nos produits » ---------- */
   var USAGES = [
-    { key: 'visage',  label: 'Visage',        image: 'assets/produits/vip-skin-serum.jpg',
+    { key: 'visage',  label: 'Visage',        image: 'assets/categories/visage.jpg',
       slugs: ['awa-complexe-equilibrant', 'awa-mousse-purifiante', 'awa-gel-exfoliant-regenerant', 'ms-gel-nettoyant-purifiant', 'ms-fotocontrol-familial', 'vip-skin-filtre-solaire', 'vip-skin-gel-hydratation-active', 'vip-skin-green-cream', 'vip-skin-serum'] },
-    { key: 'corps',   label: 'Corps',         image: 'assets/produits/ms-atopic-lotion.jpg',
+    { key: 'corps',   label: 'Corps',         image: 'assets/categories/corps.jpg',
       slugs: ['ms-atopic-lotion', 'ms-fotocontrol-familial'] },
-    { key: 'cheveux', label: 'Cheveux',       image: 'assets/produits/ms-shampooing-sebo-regulateur.jpg',
+    { key: 'cheveux', label: 'Cheveux',       image: 'assets/categories/cheveux.jpg',
       slugs: ['ms-shampooing-sebo-regulateur', 'ms-shampooing-vinaigre'] },
-    { key: 'ados',    label: 'Ados',          image: 'assets/produits/awa-mousse-purifiante.jpg',
+    { key: 'ados',    label: 'Ados',          image: 'assets/categories/ados.jpg',
       slugs: ['awa-complexe-equilibrant', 'awa-mousse-purifiante', 'awa-gel-exfoliant-regenerant'] },
-    { key: 'sensible', label: 'Peau sensible', image: 'assets/produits/vip-skin-green-cream.jpg',
+    { key: 'sensible', label: 'Peau sensible', image: 'assets/categories/peau-sensible.jpg',
       slugs: ['ms-atopic-lotion', 'ms-gel-nettoyant-purifiant', 'vip-skin-gel-hydratation-active', 'vip-skin-green-cream', 'vip-skin-serum'] }
   ];
   function usageByKey(k) { return USAGES.filter(function (u) { return u.key === k; })[0]; }
