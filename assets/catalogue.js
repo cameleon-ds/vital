@@ -139,14 +139,19 @@
       info: [['Poids', '0,200 kg'], ['Dimensions', '4,5 × 4,5 × 16,2 cm'], ['Format', '150 ml'], ['Indications', 'Anti-acné, antiseptique, visage, nettoyage'], ['Types de peau', 'Peau grasse, normale'], ['Usage', 'Soin de la peau']]
     },
     {
-      slug: 'awa-gel-matifiant', name: 'AWA Gel Matifiant', sub: 'Gel hydratant teinté oil free SPF 50+', size: '50 ml',
-      category: 'awa', types: ['grasses', 'solaire'], price: 19.00, code: '',
-      short: '<b>Gel hydratant teinté oil free</b> SPF 50+.',
+      slug: 'awa-gel-exfoliant-regenerant', name: 'AWA Gel Exfoliant Régénérant', sub: 'Gel exfoliant-régénérant anti-acné', size: '50 ml',
+      category: 'awa', types: ['grasses'], price: 19.00, code: '195102.1',
+      short: '<b>Gel exfoliant-régénérant.</b> Traitement des lésions d’acné qui atténue l’aspect des petites marques.',
       desc: [
-        'Gel hydratant matifiant teinté, sans huile (oil free), SPF 50+.'
+        'Gel exfoliant-régénérant. Traitement des lésions d’acné qui estompe l’aspect des petites marques.',
+        'Ses acides lactique et salicylique lui confèrent un léger effet exfoliant et régénérant, tandis que son dérivé de zinc contribue à réguler la production de sébum.'
       ],
-      usage: '', indications: '', actifs: [], compo: '', warnings: [],
-      info: [['Format', '50 ml']]
+      usage: 'Après le nettoyage avec la solution purifiante AWA, appliquer chaque soir sur le visage, le cou et le décolleté.',
+      indications: 'Traitement régénérant des peaux mixtes, grasses et à tendance acnéique, ainsi que des peaux présentant des points noirs ou des pores dilatés. Recommandé aussi pour tout type de peau nécessitant un renouvellement de surface. Testé dermatologiquement.',
+      actifs: ['Acide salicylique', 'Acide sorbique', 'Zinc'],
+      compo: 'AQUA, GLYCERETH-26, LACTIC ACID, SALICYLIC ACID, SORBIC ACID, BENZYL ALCOHOL, ZINC PCA, CHLORELLA VULGARIS EXTRACT, GLYCERIN, DISODIUM EDTA, AMODIMETHICONE, TRIDECETH-7, TRIDECETH-5, PROPYLENE GLYCOL, TRIDECETH-12, DEHYDROXANTHAN GUM, PARFUM, LINALOOL, LIMONENE.',
+      warnings: W_AWA,
+      info: [['Poids', '0,148 kg'], ['Dimensions', '4 × 4 × 16 cm'], ['Format', '50 ml'], ['Indications', 'Anti-acné, anti-taches, antiseptique, visage'], ['Types de peau', 'Peau grasse, normale'], ['Usage', 'Soin de la peau']]
     },
     {
       slug: 'vip-skin-filtre-solaire', name: 'VIP Skin Filtre Solaire SPF 50+', sub: 'Haute protection UVB/UVA', size: '50 ml',
