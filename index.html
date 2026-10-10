@@ -259,9 +259,9 @@
   .awa-slide.active .awa-band-text > * { opacity: 1; transform: none; transition: opacity .7s ease .15s, transform .7s cubic-bezier(.22, 1, .36, 1) .15s; }
   .awa-slide.active .awa-band-text > *:nth-child(2) { transition-delay: .25s; }
   .awa-slide.active .awa-band-text > *:nth-child(3) { transition-delay: .35s; }
-  .awa-ctrl { position: absolute; left: max(40px, calc((100vw - 1280px) / 2 + 40px)); bottom: 32px; z-index: 3; display: flex; align-items: center; gap: 14px; }
-  .awa-arrow { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; background: rgba(255, 255, 255, .88); color: #162A4C; cursor: pointer; transition: background .25s ease, transform .25s ease; }
-  .awa-arrow:hover { background: #fff; transform: translateY(-2px); }
+  .awa-ctrl { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 3; display: flex; align-items: center; gap: 12px; padding: 6px 8px; background: rgba(255, 255, 255, .94); box-shadow: 0 8px 24px rgba(22, 42, 76, .14); }
+  .awa-arrow { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; background: transparent; color: #162A4C; cursor: pointer; transition: background .25s ease; }
+  .awa-arrow:hover { background: rgba(143, 208, 214, .4); }
   .awa-arrow:focus-visible { outline: 3px solid #162A4C; outline-offset: 2px; }
   .awa-dots { display: flex; align-items: center; gap: 8px; }
   .awa-dot { position: relative; width: 26px; height: 4px; padding: 0; border: 0; cursor: pointer; background: rgba(22, 42, 76, .28); transition: width .5s cubic-bezier(.22, 1, .36, 1), background .3s ease; }
@@ -277,7 +277,7 @@
     .awa-band-text { padding: 32px 20px 100px; gap: 24px; justify-content: flex-start; }
     .awa-band-text h2 { font-size: 28px; }
     .awa-sub { font-size: 16px; margin-top: -4px; }
-    .awa-ctrl { left: 20px; bottom: 28px; }
+    .awa-ctrl { bottom: 22px; }
   }
   @media (prefers-reduced-motion: reduce) { .awa-slide, .awa-slide.active { transition: none; } .awa-slide .awa-band-text > *, .awa-slide.active .awa-band-text > * { transition: none; transform: none; opacity: 1; } .awa-slide.active .awa-band-img.prod img { animation: none; } }
 
