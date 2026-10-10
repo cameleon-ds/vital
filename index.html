@@ -240,18 +240,20 @@
   .awa-band { display: grid; grid-template-columns: 1fr 1fr; width: 100%; margin-top: 56px; background: #8FD0D6; min-height: clamp(380px, 36vw, 520px); overflow: hidden; }
   .awa-band-text { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 28px; padding: 56px 56px 56px max(40px, calc((100vw - 1280px) / 2 + 40px)); }
   .awa-band-text h2 { margin: 0; font-size: 40px; line-height: 1.18; max-width: 560px; }
+  .awa-sub { margin: -8px 0 0; max-width: 520px; font-size: 18px; line-height: 1.55; font-weight: 500; color: #1E3556; }
   .awa-btn { display: inline-flex; align-items: center; justify-content: center; padding: 16px 32px; background: #162A4C; color: #fff; font-size: 15px; font-weight: 700; letter-spacing: 0.01em; transition: transform .3s ease, box-shadow .3s ease, background .3s ease; }
   .awa-btn:hover { background: #0F1F3A; transform: translateY(-3px); box-shadow: 0 10px 22px rgba(22, 42, 76, .28); }
   .awa-btn:active { transform: translateY(0); box-shadow: none; }
   .awa-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   .awa-band-img { position: relative; min-height: 100%; overflow: hidden; }
   .awa-band-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 14%; }
-  @media (max-width: 1100px) { .awa-band-text h2 { font-size: 34px; } .awa-band-text { padding-right: 40px; } }
+  @media (max-width: 1100px) { .awa-sub { font-size: 17px; } .awa-band-text h2 { font-size: 34px; } .awa-band-text { padding-right: 40px; } }
   @media (max-width: 820px) {
     .awa-band { grid-template-columns: 1fr; margin-top: 40px; min-height: 0; }
     .awa-band-img { order: -1; height: 320px; min-height: 0; }
     .awa-band-text { padding: 32px 20px 40px; gap: 24px; }
     .awa-band-text h2 { font-size: 28px; }
+    .awa-sub { font-size: 16px; margin-top: -4px; }
   }
 
   /* Footer */
@@ -325,6 +327,7 @@
   <section class="awa-band" id="awa-band">
     <div class="awa-band-text">
       <h2>AWA : la gamme dermatologique pour les ados à peau grasse et sujette à l'acné</h2>
+      <p class="awa-sub">Une routine complète, de qualité médicale et dermatologique espagnole, pour moins de 46 € au total, pour redonner confiance à leur adolescent.</p>
       <a href="#produits" class="awa-btn" id="awa-btn">Découvrez la gamme</a>
     </div>
     <div class="awa-band-img"><img src="assets/categories/awa-ados.jpg" alt="Deux adolescents souriants" loading="lazy"></div>
