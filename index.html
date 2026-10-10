@@ -247,6 +247,8 @@
   .awa-desc { margin: -12px 0 0; max-width: 520px; font-size: 16px; line-height: 1.6; font-weight: 400; color: #1E3556; }
   .awa-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 32px; border: 0; background: #162A4C; color: #fff; font: inherit; font-size: 15px; font-weight: 700; letter-spacing: 0.01em; cursor: pointer; transition: transform .3s ease, box-shadow .3s ease, background .3s ease; }
   .awa-btn:hover { background: #0F1F3A; transform: translateY(-3px); box-shadow: 0 10px 22px rgba(22, 42, 76, .28); }
+  .awa-btn svg { flex: 0 0 auto; transition: transform .3s ease; }
+  .awa-btn:hover svg { transform: translateX(4px); }
   .awa-btn:active { transform: translateY(0); box-shadow: none; }
   .awa-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   .awa-band-img { position: relative; min-height: 100%; overflow: hidden; }
@@ -365,7 +367,7 @@
         <div class="awa-band-text">
           <h2>AWA : la gamme dermatologique pour les ados à peau grasse et sujette à l'acné</h2>
           <p class="awa-sub">Une routine complète, de qualité médicale et dermatologique espagnole, pour moins de 46 € au total, pour redonner confiance à leur adolescent.</p>
-          <a href="#produits" class="awa-btn" id="awa-btn">Découvrez la gamme</a>
+          <a href="#produits" class="awa-btn" id="awa-btn">Découvrez la gamme <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></a>
         </div>
         <div class="awa-band-img"><img src="assets/categories/awa-ados.jpg" alt="Deux adolescents souriants" loading="lazy"></div>
       </div>
@@ -643,9 +645,7 @@
     var btn = document.getElementById('awa-btn');
     if (btn) btn.addEventListener('click', function (e) {
       e.preventDefault();
-      state.category = 'awa';
-      renderPills(); renderGrid();
-      document.getElementById('produits').scrollIntoView({ behavior: 'smooth' });
+      manual(idx + 1);
     });
     show(0);
     if ('IntersectionObserver' in window) {
