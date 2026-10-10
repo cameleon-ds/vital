@@ -32,6 +32,9 @@
   .topbar { background: var(--ink); color: #E7E4E8; text-align: center; padding: 8px 20px; font-size: 12px; letter-spacing: 0.04em; font-weight: 500; }
 
   /* Header */
+  /* Les liens d'ancre défilent en douceur, en s'arrêtant sous l'en-tête fixe */
+  html { scroll-padding-top: 90px; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
   header { border-bottom: 1px solid #E9E7EA; position: sticky; top: 0; background: #fff; z-index: 20; }
   header .wrap { display: flex; align-items: center; gap: 40px; padding-top: 18px; padding-bottom: 18px; }
   header .logo img { height: 48px; width: auto; }
@@ -257,7 +260,7 @@
   }
 
   /* Titre de section au-dessus du bandeau AWA */
-  .gammes-head { max-width: 1280px; margin: 56px auto 0; padding: 0 40px; }
+  .gammes-head { max-width: 1280px; margin: 56px auto 0; padding: 0 40px; scroll-margin-top: 20px; }
   .gammes-head + .awa-band { margin-top: 0; }
   .gammes-head .section-head { margin-bottom: 18px; }
   .gammes-tabs { margin-bottom: 24px; }
@@ -549,7 +552,7 @@
           '<span class="hero-badge anim" style="--i:0;color:' + s.badgeColor + ';">' + escapeHtml(s.badge) + '</span>' +
           '<h1 class="hero-title anim" style="--i:1;">' + escapeHtml(s.title) + '</h1>' +
           '<p class="hero-sub anim" style="--i:2;">' + escapeHtml(s.sub) + '</p>' +
-          '<div class="hero-actions"><a href="#produits" class="btn-primary anim" style="--i:3;">Découvrir la gamme</a></div>' +
+          '<div class="hero-actions"><a href="#gammes" class="btn-primary anim" data-range="' + s.cat + '" style="--i:3;">Découvrir la gamme</a></div>' +
         '</div></div>' +
         artHtml +
       '</div>';
@@ -762,6 +765,8 @@
     tabs.forEach(function (tb) {
       tb.addEventListener('click', function () { switchTo(tb.getAttribute('data-range')); });
     });
+    /* utilisé par les boutons « Découvrir la gamme » de la bannière du haut */
+    window.VITAL_selectRange = function (key) { switchTo(key); };
 
     document.getElementById('awa-prev').addEventListener('click', function () { manual(idx - 1); });
     document.getElementById('awa-next').addEventListener('click', function () { manual(idx + 1); });
@@ -915,6 +920,14 @@
   renderTypeSelect();
   renderCategories();
   initAwaSlider();
+  /* Bannière du haut : « Découvrir la gamme » descend vers « Nos Gammes » avec l'onglet de la gamme du slide */
+  document.getElementById('hero-track').addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('[data-range]') : null;
+    if (!a) return;
+    e.preventDefault();
+    if (window.VITAL_selectRange) window.VITAL_selectRange(a.getAttribute('data-range'));
+    document.getElementById('gammes').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
   buildHero();
   renderHero();
   renderPills();
