@@ -591,7 +591,7 @@
     var tabsEl = document.getElementById('gammes-tabs');
     var dotsEl = document.getElementById('awa-dots');
     if (!band || !track) return;
-    var DELAY = 6000;
+    var DELAY = 3800;
     var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var RANGES = [
       { key: 'awa', label: 'AWA',
@@ -663,7 +663,10 @@
     function schedule() {
       clearTimeout(timer); timer = null;
       if (!running || reduced) return;
-      timer = setTimeout(function () { show(idx + 1); }, DELAY);
+      timer = setTimeout(function () {
+        /* fin de la gamme : on passe automatiquement à l'onglet suivant (AWA → MS → VIP Skin → AWA) */
+        if (idx >= slides.length - 1) nextRange(); else show(idx + 1);
+      }, DELAY);
     }
     function show(n) {
       idx = (n + slides.length) % slides.length;
@@ -719,15 +722,21 @@
       return '<button type="button" class="pill' + (i === 0 ? ' active' : '') + '" role="tab" aria-selected="' + (i === 0) + '" data-range="' + r.key + '">' + escapeHtml(r.label) + '</button>';
     }).join('');
     var tabs = Array.prototype.slice.call(tabsEl.querySelectorAll('.pill'));
+    function switchTo(key) {
+      if (key === current) return;
+      current = key;
+      clearTimeout(timer); timer = null;
+      tabs.forEach(function (x) { var on = x.getAttribute('data-range') === key; x.classList.toggle('active', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      band.classList.add('switching');
+      setTimeout(function () { build(key); band.classList.remove('switching'); }, reduced ? 0 : 260);
+    }
+    function nextRange() {
+      var i = 0;
+      RANGES.forEach(function (r, k) { if (r.key === current) i = k; });
+      switchTo(RANGES[(i + 1) % RANGES.length].key);
+    }
     tabs.forEach(function (tb) {
-      tb.addEventListener('click', function () {
-        var key = tb.getAttribute('data-range');
-        if (key === current) return;
-        current = key;
-        tabs.forEach(function (x) { var on = x === tb; x.classList.toggle('active', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
-        band.classList.add('switching');
-        setTimeout(function () { build(key); band.classList.remove('switching'); }, reduced ? 0 : 260);
-      });
+      tb.addEventListener('click', function () { switchTo(tb.getAttribute('data-range')); });
     });
 
     document.getElementById('awa-prev').addEventListener('click', function () { manual(idx - 1); });
