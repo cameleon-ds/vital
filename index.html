@@ -257,6 +257,8 @@
   .awa-desc { margin: -12px 0 0; max-width: 520px; font-size: 16px; line-height: 1.6; font-weight: 400; color: #1E3556; }
   .awa-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 32px; border: 0; background: #162A4C; color: #fff; font: inherit; font-size: 15px; font-weight: 700; letter-spacing: 0.01em; cursor: pointer; transition: transform .3s ease, box-shadow .3s ease, background .3s ease; }
   .awa-btn:hover { background: #0F1F3A; transform: translateY(-3px); box-shadow: 0 10px 22px rgba(22, 42, 76, .28); }
+  .awa-ind { margin: -12px 0 0; max-width: 520px; font-size: 15px; line-height: 1.55; font-weight: 400; color: #1E3556; }
+  .awa-ind strong { font-weight: 700; color: #162A4C; }
   .awa-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 28px; }
   .awa-more { font-size: 15px; font-weight: 700; color: #162A4C; text-decoration: none; border-bottom: 2px solid #162A4C; padding-bottom: 2px; transition: opacity .25s ease, border-color .25s ease; }
   .awa-more:hover { opacity: .65; }
@@ -647,6 +649,7 @@
           '<h2>' + escapeHtml(p.name) + '</h2>' +
           '<p class="awa-sub">' + escapeHtml(p.sub) + (p.size ? ' · ' + escapeHtml(p.size) : '') + '</p>' +
           (AWA_DESC[p.slug] ? '<p class="awa-desc">' + escapeHtml(AWA_DESC[p.slug]) + '</p>' : '') +
+          (p.indications ? '<p class="awa-ind"><strong>Indications :</strong> ' + escapeHtml(p.indications) + '</p>' : '') +
           '<div class="awa-actions">' +
             '<button type="button" class="awa-btn" data-add="' + p.id + '" aria-label="Ajouter ' + escapeHtml(p.name) + ' au panier">Ajouter au panier</button>' +
             '<a href="' + href + '" class="awa-more" aria-label="Voir plus : ' + escapeHtml(p.name) + '">Voir plus</a>' +
