@@ -21,7 +21,7 @@ button, input[type="submit"],
 
 /* ---- 1bis. Aucun arrondi nulle part (cartes, champs, images, badges, modales…) ---- */
 *, *::before, *::after { border-radius: 0 !important; }
-.s-spin, .awa-cursor span { border-radius: 50% !important; }   /* seule exception : l'indicateur de chargement doit rester circulaire pour tourner */
+.s-spin, .awa-cursor span, .use-tab .ut-img, .use-tab .ut-img img { border-radius: 50% !important; }   /* seule exception : l'indicateur de chargement doit rester circulaire pour tourner */
 
 
 /* ---- 1ter. Contrôles de formulaire 100 % carrés (cases, radios, listes déroulantes) ---- */
