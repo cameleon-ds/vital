@@ -3,7 +3,7 @@
   --ink: #363B42; --ink-strong: #2A2E34; --gray: #6B7280; --gray-soft: #7B818A;
   --purple: #72C6C7; --purple-dark: #5BB5B6; --purple-soft: #E8F5F5;
   --border: #E3E5E8; --bg-soft: #F7F6F7;
-  --ok: #2E7D5B; --ok-soft: #E8F4EE; --warn: #B7791F; --warn-soft: #FBF3E3; --err: #C0392B; --err-soft: #FBECEA;
+  --ok: #0AA26A; --ok-soft: #E3F6EE; --warn: #B7791F; --warn-soft: #FBF3E3; --err: #C0392B; --err-soft: #FBECEA;
 }
 * { box-sizing: border-box; }
 body { margin: 0; font-family: 'Manrope', sans-serif; -webkit-font-smoothing: antialiased; color: var(--ink); background: #fff; }
@@ -162,7 +162,7 @@ textarea.s-input { min-height: 84px; resize: vertical; }
 .s-ship-bar .track { height: 6px; background: #CBEBEB; border-radius: 3px; margin-top: 8px; overflow: hidden; }
 .s-ship-bar .track i { display: block; height: 100%; background: var(--purple); border-radius: 3px; transition: width .3s ease; }
 .s-ship-bar.done { background: var(--ok-soft); color: var(--ok); }
-.s-ship-bar.done .track { background: #C6E4D5; } .s-ship-bar.done .track i { background: var(--ok); }
+.s-ship-bar.done .track { background: #BDE8D6; } .s-ship-bar.done .track i { background: var(--ok); }
 .s-trust { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
 .s-trust div { display: flex; gap: 10px; align-items: center; font-size: 12px; color: var(--gray); font-weight: 600; }
 
