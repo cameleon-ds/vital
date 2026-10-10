@@ -1,11 +1,11 @@
 /* VITAL — thème des boutons (à charger EN DERNIER dans chaque page).
    Une seule source de vérité : modifier les 3 variables ci-dessous change tous les CTA du site. */
 :root {
-  --cta: #9DCED5;          /* couleur des CTA */
-  --cta-hover: #82BBC4;    /* survol */
+  --cta: #72C6C7;          /* couleur des CTA */
+  --cta-hover: #5BB3B4;    /* survol */
   --cta-ink: #FFFFFF;      /* texte sur CTA */
-  --cta-tint: rgba(157, 206, 213, 0.22);
-  --accent-text: #2B7A88;   /* variante foncée de #9DCED5 pour le texte sur fond blanc (lisibilité) */
+  --cta-tint: rgba(114, 198, 199, 0.22);
+  --accent-text: #2A8A8C;   /* variante foncée de #72C6C7 pour le texte sur fond blanc (lisibilité) */
   --title: #162A4C;        /* couleur des grands titres */
   --ease: cubic-bezier(.4, 0, .2, 1);
 }
@@ -57,7 +57,7 @@ button, .btn-primary, .btn-purple, .btn-ghost, .btn-danger, .buy-btn, .add-btn, 
   will-change: transform;
 }
 
-/* ---- 3. CTA : fond #9DCED5 ---- */
+/* ---- 3. CTA : fond #72C6C7 ---- */
 .btn-primary, .btn-purple, .buy-btn, .add-btn, .s-add, .newsletter-form button {
   background: var(--cta);
   color: var(--cta-ink);
@@ -172,8 +172,8 @@ button:focus-visible, a:focus-visible, .btn-primary:focus-visible, .buy-btn:focu
 
 /* ============ Thèmes de couleur (Edit color) ============
    La couleur primaire vient des variables ci-dessous ; le bouton « Edit color » du pied de page
-   pose data-theme="lavande" ou "myrtille" sur <html> (défaut : #9DCED5). */
-:root { --cta-rgb: 157, 206, 213; --cta-soft: #EAF5F7; }
+   pose data-theme="lavande" ou "myrtille" sur <html> (défaut : #72C6C7). */
+:root { --cta-rgb: 114, 198, 199; --cta-soft: #E8F6F6; }
 html[data-theme="lavande"] { --cta: #bd9ed6; --cta-hover: #a988c6; --cta-rgb: 189, 158, 214; --cta-tint: rgba(189, 158, 214, 0.16); --accent-text: #6B4A8C; --cta-soft: #F3EDF8; }
 html[data-theme="myrtille"] { --cta: #9ea2d6; --cta-hover: #878cc8; --cta-rgb: 158, 162, 214; --cta-tint: rgba(158, 162, 214, 0.16); --accent-text: #4A4F94; --cta-soft: #EEEFF8; }
 :root { --purple: var(--cta); --purple-dark: var(--cta-hover); --purple-soft: var(--cta-soft); }
