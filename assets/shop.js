@@ -532,7 +532,7 @@
 
   /* ================= Thème couleur (Edit color) ================= */
   var THEMES = [
-    { key: 'menthe', label: 'Menthe', color: '#72C6C7' },
+    { key: 'menthe', label: 'Menthe', color: '#9DCED5' },
     { key: 'lavande', label: 'Lavande', color: '#bd9ed6' },
     { key: 'myrtille', label: 'Myrtille', color: '#9ea2d6' }
   ];
