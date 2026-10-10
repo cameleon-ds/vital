@@ -140,7 +140,7 @@
     },
     {
       slug: 'awa-gel-matifiant', name: 'AWA Gel Matifiant', sub: 'Gel hydratant teinté oil free SPF 50+', size: '50 ml',
-      category: 'awa', types: ['grasses', 'solaire'], price: null, code: '',
+      category: 'awa', types: ['grasses', 'solaire'], price: 19.00, code: '',
       short: '<b>Gel hydratant teinté oil free</b> SPF 50+.',
       desc: [
         'Gel hydratant matifiant teinté, sans huile (oil free), SPF 50+.'
