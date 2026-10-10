@@ -69,7 +69,7 @@
     },
     {
       slug: 'ms-gel-nettoyant-purifiant', name: 'MS Gel Nettoyant Purifiant', sub: 'Hygiène faciale délicate', size: '250 ml',
-      category: 'ms', types: ['nettoyant'], price: 20.45, code: '166537',
+      category: 'ms', types: ['nettoyant'], price: 24.00, code: '166537',
       short: 'Gel nettoyant purifiant pour le <b>nettoyage tensioactif de la peau du visage</b>.',
       desc: [
         'Gel transparent pour le nettoyage de la peau du visage, aux tensioactifs exclusifs qui régulent le contenu lipidique et la flore bactérienne de la peau, avec un léger effet exfoliant sans irritation.'
@@ -83,7 +83,7 @@
     },
     {
       slug: 'ms-shampooing-sebo-regulateur', name: 'MS Shampooing Sébo-régulateur', sub: 'Cuir chevelu séborrhéique', size: '250 ml',
-      category: 'ms', types: ['cheveux'], price: 19.35, code: '166543',
+      category: 'ms', types: ['cheveux'], price: 24.50, code: '166543',
       short: 'Shampooing pour l’<b>hygiène et le soin des cheveux et du cuir chevelu gras</b>.',
       desc: [
         'Shampooing pour l’hygiène et le soin des cheveux et du cuir chevelu gras. Sa base douce et démêlante régule progressivement les sécrétions sébacées et évite l’effet rebond, ce qui permet d’espacer les lavages.'
@@ -97,7 +97,7 @@
     },
     {
       slug: 'ms-shampooing-vinaigre', name: 'MS Shampooing au Vinaigre', sub: 'Usage fréquent', size: '250 ml',
-      category: 'ms', types: ['cheveux'], price: 18.85, code: '159700.7',
+      category: 'ms', types: ['cheveux'], price: 23.50, code: '159700.7',
       short: 'Shampooing pour l’<b>hygiène fréquente des cheveux et du cuir chevelu</b>.',
       desc: [
         'Shampooing pour le nettoyage fréquent des cheveux et du cuir chevelu, formulé sans sulfates, parabènes ni silicones, d’origine naturelle et vegan, élaboré avec du vinaigre de Xérès.'
@@ -111,7 +111,7 @@
     },
     {
       slug: 'awa-complexe-equilibrant', name: 'AWA Complexe Équilibrant', sub: 'Gel normalisateur de la sécrétion sébacée', size: '100 ml',
-      category: 'awa', types: ['grasses'], price: 14.90, code: '195100.7',
+      category: 'awa', types: ['grasses'], price: 24.00, code: '195100.7',
       short: '<b>Gel normalisateur de la sécrétion sébacée.</b> Complexe antiseptique et équilibrant dont les composants évitent la dilatation des pores.',
       desc: [
         'Gel normalisateur de la sécrétion sébacée. Prévient la dilatation des pores et les impuretés, apaise les peaux obstruées et évite l’apparition de nouvelles imperfections.',
@@ -126,7 +126,7 @@
     },
     {
       slug: 'awa-mousse-purifiante', name: 'AWA Mousse Purifiante', sub: 'Hygiène quotidienne · Peaux grasses et obstruées', size: '150 ml',
-      category: 'awa', types: ['nettoyant', 'grasses'], price: 15.65, code: '195098.7',
+      category: 'awa', types: ['nettoyant', 'grasses'], price: 20.00, code: '195098.7',
       short: '<b>Mousse nettoyante purifiante.</b> Assure une hygiène correcte des peaux grasses et à impuretés.',
       desc: [
         'Mousse nettoyante purifiante qui assure une hygiène correcte des peaux grasses et à impuretés.'
@@ -178,7 +178,7 @@
     },
     {
       slug: 'vip-skin-green-cream', name: 'VIP Skin Green Cream', sub: 'Crème visage équilibrante', size: '50 ml',
-      category: 'vip', types: ['sensibles'], price: 48.90, code: '207205.3',
+      category: 'vip', types: ['sensibles'], price: 49.00, code: '207205.3',
       short: 'Émulsion H/E à la texture douce et confortable, conçue pour les <b>peaux nécessitant une tolérance maximale</b> et une action apaisante continue.',
       desc: [
         'Green Cream est une émulsion huile-dans-eau à la texture douce et confortable, conçue pour les peaux nécessitant une tolérance maximale et une action apaisante continue. Sa formule associe des actifs lipidiques restaurateurs, des osmoprotecteurs cellulaires et des facteurs naturels d’hydratation, favorisant une peau plus équilibrée, souple et mieux armée face au stress environnemental.'
@@ -192,7 +192,7 @@
     },
     {
       slug: 'vip-skin-serum', name: 'VIP Skin Sérum', sub: 'Rénovateur cellulaire', size: '30 ml',
-      category: 'vip', types: ['antiage'], price: 39.90, code: '171258',
+      category: 'vip', types: ['antiage'], price: 45.00, code: '171258',
       short: 'Concentré d’AHS et de tartrates de raisin micro-encapsulés qui <b>stimule le renouvellement des cellules superficielles</b> de la peau.',
       desc: [
         'Traitement concentré associant AHS et tartrates de raisin micro-encapsulés, qui stimule le renouvellement des cellules superficielles de la peau avec une action antioxydante et préventive du vieillissement.'
