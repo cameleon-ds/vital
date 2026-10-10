@@ -266,10 +266,12 @@
   .awa-arrow:focus-visible { outline: 3px solid #162A4C; outline-offset: 2px; }
   .awa-arrow.prev { left: 24px; }
   .awa-arrow.next { right: 24px; }
-  .awa-dots { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: rgba(255, 255, 255, .94); box-shadow: 0 8px 24px rgba(22, 42, 76, .14); pointer-events: auto; }
-  .awa-dot { position: relative; width: 26px; height: 4px; padding: 0; border: 0; cursor: pointer; background: rgba(22, 42, 76, .28); transition: width .5s cubic-bezier(.22, 1, .36, 1), background .3s ease; }
-  .awa-dot::before { content: ''; position: absolute; left: 0; right: 0; top: -12px; bottom: -12px; }
-  .awa-dot.active { width: 52px; background: #162A4C; }
+  .awa-dots { position: absolute; left: max(88px, calc((100vw - 1280px) / 2 + 40px)); bottom: 28px; z-index: 3; display: flex; gap: 8px; align-items: center; pointer-events: none; }
+  .awa-dot { position: relative; width: 28px; height: 4px; padding: 0; border: 0; cursor: pointer; pointer-events: auto; overflow: hidden; background: rgba(54, 59, 66, .22); transition: width .5s cubic-bezier(.22, 1, .36, 1), background .3s ease; }
+  .awa-dot.active { width: 64px; }
+  .awa-dot i { position: absolute; inset: 0; background: #162A4C; transform: scaleX(0); transform-origin: left; }
+  .awa-dot.active i { animation: heroProgress var(--dur, 6s) linear forwards; }
+  .awa-band.paused .awa-dot.active i { animation-play-state: paused; }
   .awa-dot:focus-visible { outline: 3px solid #162A4C; outline-offset: 3px; }
   @media (max-width: 1100px) { .awa-sub { font-size: 17px; } .awa-band-text h2 { font-size: 34px; } .awa-band-text { padding-right: 40px; } }
   @media (max-width: 820px) {
@@ -283,9 +285,9 @@
     .awa-arrow { opacity: 1; width: 40px; height: 40px; margin-top: 0; top: 140px; background: rgba(255, 255, 255, .9); }
     .awa-arrow.prev { left: 12px; }
     .awa-arrow.next { right: 12px; }
-    .awa-dots { bottom: 22px; }
+    .awa-dots { left: 20px; bottom: 28px; }
   }
-  @media (prefers-reduced-motion: reduce) { .awa-slide, .awa-slide.active { transition: none; } .awa-slide .awa-band-text > *, .awa-slide.active .awa-band-text > * { transition: none; transform: none; opacity: 1; } .awa-slide.active .awa-band-img.prod img { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .awa-dot.active i { animation: none; transform: none; } .awa-slide, .awa-slide.active { transition: none; } .awa-slide .awa-band-text > *, .awa-slide.active .awa-band-text > * { transition: none; transform: none; opacity: 1; } .awa-slide.active .awa-band-img.prod img { animation: none; } }
 
   /* Footer */
   footer { margin-top: 0; background: #fff; border-top: 1px solid #ECEAEC; }
@@ -581,11 +583,23 @@
     });
     var slides = Array.prototype.slice.call(track.querySelectorAll('.awa-slide'));
     var dotsEl = document.getElementById('awa-dots');
-    var idx = 0, timer = null, stopped = false;
+    var DELAY = 6000, idx = 0, timer = null, running = false;
+    var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     dotsEl.innerHTML = slides.map(function (_, i) {
-      return '<button type="button" class="awa-dot' + (i === 0 ? ' active' : '') + '" aria-label="Aller à la diapositive ' + (i + 1) + '"></button>';
+      return '<button type="button" class="awa-dot' + (i === 0 ? ' active' : '') + '" style="--dur:' + DELAY + 'ms" aria-label="Aller à la diapositive ' + (i + 1) + '"><i></i></button>';
     }).join('');
     var dots = Array.prototype.slice.call(dotsEl.querySelectorAll('.awa-dot'));
+    function restartDots() {
+      dots.forEach(function (d, i) {
+        d.classList.remove('active');
+        if (i === idx) { void d.offsetWidth; d.classList.add('active'); }
+      });
+    }
+    function schedule() {
+      clearTimeout(timer); timer = null;
+      if (!running || reduced) return;
+      timer = setTimeout(function () { show(idx + 1); }, DELAY);
+    }
     function show(n) {
       idx = (n + slides.length) % slides.length;
       slides.forEach(function (sl, i) {
@@ -594,14 +608,12 @@
         sl.setAttribute('aria-hidden', on ? 'false' : 'true');
         if (on) sl.removeAttribute('inert'); else sl.setAttribute('inert', '');
       });
-      dots.forEach(function (d, i) { d.classList.toggle('active', i === idx); });
+      restartDots();
+      schedule();
     }
-    function play() {
-      if (stopped || timer || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
-      timer = setInterval(function () { show(idx + 1); }, 7000);
-    }
-    function pause() { clearInterval(timer); timer = null; }
-    function manual(n) { stopped = true; pause(); show(n); }
+    function play() { running = true; band.classList.remove('paused'); restartDots(); schedule(); }
+    function pause() { running = false; clearTimeout(timer); timer = null; band.classList.add('paused'); }
+    function manual(n) { show(n); }
     document.getElementById('awa-prev').addEventListener('click', function () { manual(idx - 1); });
     document.getElementById('awa-next').addEventListener('click', function () { manual(idx + 1); });
     dots.forEach(function (d, i) { d.addEventListener('click', function () { manual(i); }); });
