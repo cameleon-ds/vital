@@ -152,6 +152,24 @@
   .cat-card:hover .brand { letter-spacing: 0.08em; }
   .cat-card .brand + .name { margin-top: 4px; }
   .cat-card .count { font-size: 13px; margin-top: 4px; }
+  /* Onglets de catégories (image + texte) */
+  .use-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+  .use-tab { display: flex; flex-direction: column; align-items: stretch; padding: 0; border: 1px solid var(--border); background: #fff; color: var(--ink-strong); text-align: center; cursor: pointer; overflow: hidden; border-bottom: 3px solid var(--border); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease; }
+  .use-tab .ut-img { display: flex; align-items: center; justify-content: center; height: 170px; background: var(--cta-soft, #F2F7F8); overflow: hidden; }
+  .use-tab .ut-img img { height: 100%; width: 100%; object-fit: contain; mix-blend-mode: multiply; padding: 14px; box-sizing: border-box; transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+  .use-tab:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(54, 59, 66, .10); border-bottom-color: var(--cta); }
+  .use-tab:hover .ut-img img { transform: scale(1.06); }
+  .use-tab .ut-txt { display: flex; flex-direction: column; gap: 3px; padding: 16px 12px 18px; }
+  .use-tab .ut-name { font-size: 17px; font-weight: 800; }
+  .use-tab .ut-count { font-size: 13px; color: var(--gray); }
+  .use-tab.active { border-color: var(--cta); border-bottom-color: var(--cta); background: var(--cta-tint); box-shadow: 0 10px 22px rgba(var(--cta-rgb, 136, 197, 209), .28); }
+  .use-tab.active .ut-name { color: var(--accent-text, var(--ink-strong)); }
+  .use-tab:focus-visible { outline: 3px solid var(--cta); outline-offset: 3px; }
+  @media (max-width: 900px) {
+    .use-tabs { display: flex; overflow-x: auto; scroll-snap-type: x proximity; gap: 12px; padding: 4px 2px 12px; margin: 0 -2px; }
+    .use-tab { flex: 0 0 150px; scroll-snap-align: start; }
+    .use-tab .ut-img { height: 130px; }
+  }
   @media (max-width: 1024px) { .cat-grid { grid-template-columns: 1fr; } }
 
   /* Filters */
@@ -405,7 +423,7 @@
       <h2>Nos catégories</h2>
       <span class="note">De nouvelles gammes s'ajoutent régulièrement</span>
     </div>
-    <div class="cat-grid" id="cat-grid"></div>
+    <div class="use-tabs" id="use-tabs" role="group" aria-label="Choisir une catégorie"></div>
   </section>
 
   <section class="products" id="produits">
@@ -506,7 +524,7 @@
     { badge: 'MS — IDP Medical Skin',  badgeColor: '#72C6C7', title: 'Les soins dermatologiques de la peau', sub: 'Lotion atopic, protection solaire familiale, nettoyant purifiant et shampooings pour le cuir chevelu.', bg: '#F6E3DC', veil: '246,227,220', cat: 'ms',  image: 'assets/produits/ms-atopic-lotion.jpg', banner: 'assets/banners/banner-3.png', bannerAlt: 'Femme tenant la lotion MS Atopic', bannerPos: '70% 28%' }
   ];
 
-  var state = { slide: 0, category: 'tous', type: 'tous', query: '' };
+  var state = { slide: 0, category: 'tous', usage: 'tous', type: 'tous', query: '' };
   var heroTimer = null;
 
   // Filtre de gamme venant d'une autre page (?cat=ms)
@@ -763,36 +781,52 @@
     } else { play(); }
   }
 
-  /* ---------- Gammes (cartes) ---------- */
-  function renderCategories() {
-    var grid = document.getElementById('cat-grid');
-    grid.style.setProperty('--cols', Math.min(CATEGORIES.length, 3));
-    grid.innerHTML = CATEGORIES.map(function (c) {
-      var parts = c.label.split(' — '), brand = parts[0], rest = parts.slice(1).join(' — ');
-      return '<a href="#produits" class="cat-card" data-cat="' + c.key + '" style="background:' + c.bg + ';">' +
-        '<img src="' + c.image + '" alt="" loading="lazy">' +
-        '<div style="margin-top:auto; position:relative; z-index:1;">' +
-          '<span class="brand">' + escapeHtml(brand) + '</span>' +
-          (rest ? '<div class="name">' + escapeHtml(rest) + '</div>' : '') +
-          '<div class="desc" style="color:' + c.color + ';">' + escapeHtml(c.desc) + '</div>' +
-          '<div class="count" style="color:' + c.color + ';">' + plural(countIn(c.key), 'produit') + '</div>' +
-        '</div>' +
-      '</a>';
+  /* ---------- Catégories (onglets image + texte) : filtrent la grille « Tous nos produits » ---------- */
+  var USAGES = [
+    { key: 'visage',  label: 'Visage',        image: 'assets/produits/vip-skin-serum.jpg',
+      slugs: ['awa-complexe-equilibrant', 'awa-mousse-purifiante', 'awa-gel-exfoliant-regenerant', 'ms-gel-nettoyant-purifiant', 'ms-fotocontrol-familial', 'vip-skin-filtre-solaire', 'vip-skin-gel-hydratation-active', 'vip-skin-green-cream', 'vip-skin-serum'] },
+    { key: 'corps',   label: 'Corps',         image: 'assets/produits/ms-atopic-lotion.jpg',
+      slugs: ['ms-atopic-lotion', 'ms-fotocontrol-familial'] },
+    { key: 'cheveux', label: 'Cheveux',       image: 'assets/produits/ms-shampooing-sebo-regulateur.jpg',
+      slugs: ['ms-shampooing-sebo-regulateur', 'ms-shampooing-vinaigre'] },
+    { key: 'ados',    label: 'Ados',          image: 'assets/produits/awa-mousse-purifiante.jpg',
+      slugs: ['awa-complexe-equilibrant', 'awa-mousse-purifiante', 'awa-gel-exfoliant-regenerant'] },
+    { key: 'sensible', label: 'Peau sensible', image: 'assets/produits/vip-skin-green-cream.jpg',
+      slugs: ['ms-atopic-lotion', 'ms-gel-nettoyant-purifiant', 'vip-skin-gel-hydratation-active', 'vip-skin-green-cream', 'vip-skin-serum'] }
+  ];
+  function usageByKey(k) { return USAGES.filter(function (u) { return u.key === k; })[0]; }
+  function renderUsageTabs() {
+    var wrap = document.getElementById('use-tabs');
+    if (!wrap) return;
+    wrap.innerHTML = USAGES.map(function (u) {
+      var n = PRODUCTS.filter(function (p) { return u.slugs.indexOf(p.slug) !== -1; }).length;
+      var on = state.usage === u.key;
+      return '<button type="button" class="use-tab' + (on ? ' active' : '') + '" data-use="' + u.key + '" aria-pressed="' + on + '">' +
+        '<span class="ut-img"><img src="' + u.image + '" alt="" loading="lazy"></span>' +
+        '<span class="ut-txt"><span class="ut-name">' + escapeHtml(u.label) + '</span><span class="ut-count">' + plural(n, 'produit') + '</span></span>' +
+      '</button>';
     }).join('');
-    grid.querySelectorAll('.cat-card').forEach(function (card) {
-      card.addEventListener('click', function (e) {
-        e.preventDefault();
-        state.category = card.getAttribute('data-cat');
-        renderPills(); renderGrid();
-        document.getElementById('produits').scrollIntoView({ behavior: 'smooth' });
+    wrap.querySelectorAll('.use-tab').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = b.getAttribute('data-use');
+        state.usage = state.usage === k ? 'tous' : k;
+        state.category = 'tous';
+        renderUsageTabs(); renderPills(); renderGrid();
+        if (state.usage !== 'tous') document.getElementById('produits').scrollIntoView({ behavior: 'smooth' });
       });
     });
+  }
+
+  /* ---------- Gammes (footer) ---------- */
+  function renderCategories() {
+    renderUsageTabs();
     document.getElementById('footer-cats').innerHTML = CATEGORIES.map(function (c) {
       return '<a href="#produits" data-cat="' + c.key + '">' + escapeHtml(c.short) + '</a>';
     }).join('');
     document.querySelectorAll('#footer-cats a').forEach(function (a) {
       a.addEventListener('click', function () {
         state.category = a.getAttribute('data-cat');
+        state.usage = 'tous'; renderUsageTabs();
         renderPills(); renderGrid();
       });
     });
@@ -815,7 +849,7 @@
       var btn = document.createElement('button');
       btn.className = 'pill' + (state.category === p.key ? ' active' : '');
       btn.textContent = p.label;
-      btn.addEventListener('click', function () { state.category = p.key; renderPills(); renderGrid(); });
+      btn.addEventListener('click', function () { state.category = p.key; state.usage = 'tous'; renderUsageTabs(); renderPills(); renderGrid(); });
       el.appendChild(btn);
     });
   }
@@ -825,9 +859,10 @@
     var q = state.query.trim().toLowerCase();
     var filtered = PRODUCTS.filter(function (p) {
       var okCat = state.category === 'tous' || p.category === state.category;
+      var okUse = state.usage === 'tous' || usageByKey(state.usage).slugs.indexOf(p.slug) !== -1;
       var okType = state.type === 'tous' || p.types.indexOf(state.type) !== -1;
       var okQuery = q === '' || (p.name + ' ' + p.sub).toLowerCase().indexOf(q) !== -1;
-      return okCat && okType && okQuery;
+      return okCat && okUse && okType && okQuery;
     });
 
     document.getElementById('results-count').textContent = plural(filtered.length, 'produit') + ' affiché' + (filtered.length > 1 ? 's' : '');
