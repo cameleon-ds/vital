@@ -153,23 +153,23 @@
   .cat-card .brand + .name { margin-top: 4px; }
   .cat-card .count { font-size: 13px; margin-top: 4px; }
   /* Onglets de catégories (image + texte) */
-  .use-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; }
-  .use-tab { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 0; border: 0; background: transparent; color: var(--ink-strong); text-align: center; cursor: pointer; }
-  .use-tab .ut-img { display: block; width: 100%; max-width: 210px; aspect-ratio: 1 / 1; border: 4px solid var(--cta); box-sizing: border-box; background: var(--cta-soft, #F2F7F8); overflow: hidden; transition: transform .3s ease, box-shadow .3s ease; }
-  .use-tab .ut-img img { display: block; height: 100%; width: 100%; object-fit: cover; object-position: 50% 16%; transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
-  .use-tab:hover .ut-img { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(var(--cta-rgb, 136, 197, 209), .35); }
-  .use-tab:hover .ut-img img { transform: scale(1.07); }
-  .use-tab .ut-txt { display: flex; flex-direction: column; gap: 3px; }
-  .use-tab .ut-name { font-size: 18px; font-weight: 800; transition: color .25s ease; }
-  .use-tab .ut-count { font-size: 13px; color: var(--gray); }
-  .use-tab.active .ut-img { box-shadow: 0 0 0 5px var(--cta-tint), 0 12px 24px rgba(var(--cta-rgb, 136, 197, 209), .35); }
+  .use-tabs { display: flex; flex-wrap: nowrap; align-items: flex-start; gap: 30px; overflow-x: auto; scrollbar-width: none; padding: 8px 4px 6px; margin: 0 -4px; }
+  .use-tabs::-webkit-scrollbar { display: none; }
+  .use-tab { flex: 0 0 auto; width: 96px; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 0; border: 0; background: transparent; color: var(--ink-strong); text-align: center; cursor: pointer; }
+  .use-tab .ut-img { display: block; width: 88px; height: 88px; padding: 4px; border: 3px solid var(--cta); box-sizing: border-box; background: #fff; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease; }
+  .use-tab .ut-img img { display: block; height: 100%; width: 100%; object-fit: cover; object-position: 50% 14%; }
+  .use-tab:hover .ut-img { transform: scale(1.07); }
+  .use-tab .ut-txt { display: block; }
+  .use-tab .ut-name { font-size: 14px; font-weight: 700; line-height: 1.25; transition: color .25s ease; }
+  .use-tab.active .ut-img { box-shadow: 0 0 0 3px var(--cta-tint), 0 6px 14px rgba(var(--cta-rgb, 136, 197, 209), .4); }
   .use-tab.active .ut-name { color: var(--accent-text, var(--ink-strong)); }
   .use-tab:focus-visible { outline: none; }
-  .use-tab:focus-visible .ut-img { outline: 3px solid var(--cta); outline-offset: 4px; }
+  .use-tab:focus-visible .ut-img { outline: 3px solid var(--cta); outline-offset: 3px; }
   @media (max-width: 900px) {
-    .use-tabs { display: flex; overflow-x: auto; scroll-snap-type: x proximity; gap: 18px; padding: 10px 6px 12px; margin: 0 -6px; }
-    .use-tab { flex: 0 0 130px; scroll-snap-align: start; }
-    .use-tab .ut-name { font-size: 16px; }
+    .use-tabs { gap: 20px; }
+    .use-tab { width: 80px; }
+    .use-tab .ut-img { width: 76px; height: 76px; }
+    .use-tab .ut-name { font-size: 13px; }
   }
   @media (max-width: 1024px) { .cat-grid { grid-template-columns: 1fr; } }
 
@@ -800,11 +800,10 @@
     var wrap = document.getElementById('use-tabs');
     if (!wrap) return;
     wrap.innerHTML = USAGES.map(function (u) {
-      var n = PRODUCTS.filter(function (p) { return u.slugs.indexOf(p.slug) !== -1; }).length;
       var on = state.usage === u.key;
       return '<button type="button" class="use-tab' + (on ? ' active' : '') + '" data-use="' + u.key + '" aria-pressed="' + on + '">' +
         '<span class="ut-img"><img src="' + u.image + '" alt="" loading="lazy"></span>' +
-        '<span class="ut-txt"><span class="ut-name">' + escapeHtml(u.label) + '</span><span class="ut-count">' + plural(n, 'produit') + '</span></span>' +
+        '<span class="ut-txt"><span class="ut-name">' + escapeHtml(u.label) + '</span></span>' +
       '</button>';
     }).join('');
     wrap.querySelectorAll('.use-tab').forEach(function (b) {
