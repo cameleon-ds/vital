@@ -259,16 +259,16 @@
   .awa-band-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 14%; }
   .awa-band-img.prod { background: #EEF8F8; }
   .awa-band-img.prod a { position: absolute; inset: 0; display: block; }
-  .awa-band-img.prod img { object-fit: contain; object-position: 50% 50%; padding: 36px; box-sizing: border-box; mix-blend-mode: multiply; transition: transform .9s cubic-bezier(.22, 1, .36, 1); }
+  .awa-band-img.prod img { object-fit: contain; object-position: 50% 50%; padding: 36px; box-sizing: border-box; mix-blend-mode: multiply; transform: scale(var(--s, 1)); transition: transform .9s cubic-bezier(.22, 1, .36, 1); }
   @media (hover: hover) and (pointer: fine) {
     .awa-band-img.prod a { cursor: none; }
-    .awa-band-img.prod a:hover img { transform: scale(1.08); }
+    .awa-band-img.prod a:hover img { transform: scale(calc(var(--s, 1) * 1.08)); }
   }
   .awa-cursor { position: fixed; left: 0; top: 0; z-index: 60; width: 92px; height: 92px; margin: 0; pointer-events: none; will-change: transform; }
   .awa-cursor span { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: rgba(var(--cta-rgb, 136, 197, 209), .85); color: var(--cta-ink, #fff); font-size: 13px; font-weight: 700; letter-spacing: .01em; box-shadow: 0 10px 26px rgba(var(--cta-rgb, 136, 197, 209), .45); opacity: 0; transform: scale(.4); transition: opacity .25s ease, transform .35s cubic-bezier(.22, 1, .36, 1); }
   .awa-cursor.on span { opacity: 1; transform: scale(1); }
   .awa-slide.active .awa-band-img.prod img { animation: awaPop 1s cubic-bezier(.22, 1, .36, 1) backwards; }
-  @keyframes awaPop { from { opacity: 0; transform: translateY(18px) scale(.96); } to { opacity: 1; transform: none; } }
+  @keyframes awaPop { from { opacity: 0; transform: translateY(18px) scale(calc(var(--s, 1) * .96)); } to { opacity: 1; transform: scale(var(--s, 1)); } }
   .awa-slide .awa-band-text > * { opacity: 0; transform: translateY(14px); }
   .awa-slide.active .awa-band-text > * { opacity: 1; transform: none; transition: opacity .7s ease .15s, transform .7s cubic-bezier(.22, 1, .36, 1) .15s; }
   .awa-slide.active .awa-band-text > *:nth-child(2) { transition-delay: .25s; }
@@ -583,6 +583,7 @@
     if (!track) return;
     var first = track.querySelector('.awa-slide');
     var awa = PRODUCTS.filter(function (p) { return p.category === 'awa'; });
+    var AWA_IMG_SCALE = { 'awa-gel-exfoliant-regenerant': 1.65 };  /* agrandit seulement la photo de ce produit dans le slider */
     var AWA_DESC = {
       'awa-complexe-equilibrant': "Le soin de jour intelligent qui stoppe l'acné, resserre les pores et absorbe le sébum en continu pour une peau mate et nette toute la journée.",
       'awa-mousse-purifiante': "Un nettoyage haute tolérance qui purifie intensément la peau sans l'assécher. Libérez vos pores et dites adieu aux brillances dès le réveil.",
@@ -602,7 +603,7 @@
             '<a href="' + href + '" class="awa-more" aria-label="Voir plus : ' + escapeHtml(p.name) + '">Voir plus</a>' +
           '</div>' +
         '</div>' +
-        '<div class="awa-band-img prod"><a href="' + href + '" tabindex="-1" aria-label="Voir ' + escapeHtml(p.name) + '"><img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" loading="lazy"></a></div>';
+        '<div class="awa-band-img prod"' + (AWA_IMG_SCALE[p.slug] ? ' style="--s:' + AWA_IMG_SCALE[p.slug] + '"' : '') + '><a href="' + href + '" tabindex="-1" aria-label="Voir ' + escapeHtml(p.name) + '"><img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" loading="lazy"></a></div>';
       track.appendChild(div);
     });
     var slides = Array.prototype.slice.call(track.querySelectorAll('.awa-slide'));
