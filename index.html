@@ -228,6 +228,14 @@
   }
   @media (prefers-reduced-motion: reduce) { .promo-bg { transition: none; transform: none; } .promo.in .anim, .promo.in .promo-badge::after { animation: none; } }
 
+  /* Slide sur fond turquoise (bannière AWA) : badge et bouton en bleu marine pour rester lisibles — desktop seulement (sur mobile le texte est sur fond blanc) */
+  @media (min-width: 1025px) {
+    .hero-slide.on-teal .hero-badge { color: #162A4C !important; }
+    .hero-slide.on-teal .hero-sub { color: #2B3F5E; }
+    .hero-slide.on-teal .btn-primary { background: #162A4C !important; color: #fff !important; }
+    .hero-slide.on-teal .btn-primary:hover { background: #0F1F3A !important; box-shadow: 0 10px 22px rgba(22, 42, 76, .28); }
+  }
+
   /* Bandeau AWA (au-dessus des catégories) */
   .awa-band { display: grid; grid-template-columns: 1fr 1fr; width: 100%; margin-top: 56px; background: #8FD0D6; min-height: clamp(380px, 36vw, 520px); overflow: hidden; }
   .awa-band-text { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 28px; padding: 56px 56px 56px max(40px, calc((100vw - 1280px) / 2 + 40px)); }
@@ -424,7 +432,7 @@
 
   var HERO_SLIDES = [
     { badge: 'VIP Skin — Equilibrium', badgeColor: '#72C6C7', title: 'Des soins visage pour rééquilibrer votre peau', sub: 'Sérum rénovateur, Green Cream, gel hydratation active et filtre solaire SPF 50+ : la gamme VIP Skin.', bg: '#F5ECDD', cat: 'vip',  image: 'assets/produits/vip-skin-green-cream.jpg', banner: 'assets/banners/banner-1.png', bannerAlt: 'Femme tenant la Green Cream VIP Skin Equilibrium' },
-    { badge: 'AWA',                    badgeColor: '#72C6C7', title: 'Peaux grasses et obstruées : retrouvez l’équilibre', sub: 'Complexe équilibrant, mousse purifiante et gel matifiant teinté SPF 50+ pour une peau nette et matifiée.', bg: '#F8E4E1', veil: '248,228,225', cat: 'awa', image: 'assets/produits/awa-mousse-purifiante.jpg', banner: 'assets/banners/banner-2.png', bannerAlt: 'Femme tenant la Mousse Purifiante AWA', bannerPos: '70% 18%' },
+    { badge: 'AWA',                    badgeColor: '#72C6C7', title: 'Peaux grasses et obstruées : retrouvez l’équilibre', sub: 'Complexe équilibrant, mousse purifiante et gel matifiant teinté SPF 50+ pour une peau nette et matifiée.', bg: '#D6EFEF', veil: '145,206,210', tone: 'teal', cat: 'awa', image: 'assets/produits/awa-mousse-purifiante.jpg', banner: 'assets/banners/bannier-2.png', bannerAlt: 'Femme tenant la Mousse Purifiante AWA', bannerPos: '62% 30%' },
     { badge: 'MS — IDP Medical Skin',  badgeColor: '#72C6C7', title: 'Les soins dermatologiques de la peau', sub: 'Lotion atopic, protection solaire familiale, nettoyant purifiant et shampooings pour le cuir chevelu.', bg: '#F6E3DC', veil: '246,227,220', cat: 'ms',  image: 'assets/produits/ms-atopic-lotion.jpg', banner: 'assets/banners/banner-3.png', bannerAlt: 'Femme tenant la lotion MS Atopic', bannerPos: '70% 28%' }
   ];
 
@@ -445,7 +453,7 @@
     track.innerHTML = HERO_SLIDES.map(function (s, i) {
       var bannerHtml = s.banner ? '<img class="hero-bg"' + (s.bannerPos ? ' style="--pos:' + s.bannerPos + ';"' : '') + ' src="' + s.banner + '" alt="' + escapeHtml(s.bannerAlt || s.badge) + '"' + (i ? ' loading="lazy"' : ' fetchpriority="high"') + '><div class="hero-veil"' + (s.veil ? ' style="--veil:' + s.veil + ';"' : '') + '></div>' : '';
       var artHtml = s.banner ? '' : '<div class="hero-art"><img src="' + s.image + '" alt="' + escapeHtml(s.badge) + '"' + (i ? ' loading="lazy"' : '') + '></div>';
-      return '<div class="hero-slide' + (s.banner ? ' has-banner' : '') + '" style="background:' + s.bg + ';" role="group" aria-roledescription="diapositive" aria-label="' + (i + 1) + ' sur ' + HERO_SLIDES.length + '">' +
+      return '<div class="hero-slide' + (s.banner ? ' has-banner' : '') + (s.tone === 'teal' ? ' on-teal' : '') + '" style="background:' + s.bg + ';" role="group" aria-roledescription="diapositive" aria-label="' + (i + 1) + ' sur ' + HERO_SLIDES.length + '">' +
         bannerHtml +
         '<div class="hero-inner"><div class="hero-content">' +
           '<span class="hero-badge anim" style="--i:0;color:' + s.badgeColor + ';">' + escapeHtml(s.badge) + '</span>' +
