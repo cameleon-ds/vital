@@ -322,7 +322,7 @@
     function nav(href, label, key) { return '<a href="' + href + '"' + (active === key ? ' class="active"' : '') + '>' + label + '</a>'; }
     return '<header><div class="wrap">' +
       '<a href="index.html" class="logo"><img src="assets/logo.png" alt="VITAL Laboratoires"></a>' +
-      '<nav class="main-nav">' + nav('index.html', 'Accueil', 'home') + nav('index.html#categories', 'Catégories', 'cat') + nav('index.html#produits', 'Produits', 'prod') + nav('index.html#apropos', 'À propos', 'about') + nav('#contact', 'Contact', 'contact') + '</nav>' +
+      '<nav class="main-nav">' + nav('index.html', 'Accueil', 'home') + nav('index.html#gammes', 'Gammes', 'gammes') + nav('index.html#categories', 'Catégories', 'cat') + nav('index.html#produits', 'Produits', 'prod') + nav('index.html#apropos', 'À propos', 'about') + nav('#contact', 'Contact', 'contact') + '</nav>' +
       '<div class="header-icons">' +
         '<button aria-label="Rechercher">' + ICON.search + '</button>' +
         '<button aria-label="Mon compte">' + ICON.user + '</button>' +
@@ -336,7 +336,7 @@
     var cats = V.CATEGORIES.map(function (c) { return '<a href="index.html?cat=' + c.key + '#produits">' + esc(c.short) + '</a>'; }).join('');
     return '<footer id="contact"><div class="footer-grid">' +
       '<div class="footer-col"><a href="index.html" class="logo"><img src="assets/logo.png" alt="VITAL Laboratoires"></a><p>Soins dermatologiques de la peau : les gammes MS, AWA et VIP Skin pour le visage, le corps et le cuir chevelu.</p></div>' +
-      '<div class="footer-col"><div class="head">Navigation</div><a href="index.html">Accueil</a><a href="index.html#categories">Catégories</a><a href="index.html#produits">Tous les produits</a><a href="index.html#apropos">À propos</a></div>' +
+      '<div class="footer-col"><div class="head">Navigation</div><a href="index.html">Accueil</a><a href="index.html#gammes">Gammes</a><a href="index.html#categories">Catégories</a><a href="index.html#produits">Tous les produits</a><a href="index.html#apropos">À propos</a></div>' +
       '<div class="footer-col"><div class="head">Gammes</div>' + cats + '</div>' +
       '<div class="footer-col"><div class="head">Mon espace</div><a href="compte.html#connexion">Mon compte</a><a href="compte.html#commandes">Mes commandes</a><a href="panier.html">Mon panier</a><span>contact@vital.com.tn</span></div>' +
       '</div><div class="footer-bottom"><span>© 2026 VITAL Laboratoires. Tous droits réservés.</span><span>Paiement sécurisé · Livraison en France</span></div></footer>';
